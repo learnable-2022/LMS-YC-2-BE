@@ -15,4 +15,4 @@ const verifyPassword = async (adminPassword, hashedAdminPassword) => {
     return isValid
 }
 
-export { hashPassword, verifyPassword }
+module.exports = { hashPassword, verifyPassword }
