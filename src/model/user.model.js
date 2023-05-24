@@ -21,6 +21,12 @@ const userSchema = new Schema({
         trim: true,
     },
 
+    child_name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+
     child_class: {
         type: String,
         required: true,
@@ -40,20 +46,9 @@ const userSchema = new Schema({
         required: true,
     },
 
-    isDeleted: {
-        type: Boolean,
-        default: false,
-    }
 },
     { immutable: true },
     { timestamps: true }
 );
-
-userSchema.pre('remove', function (next) {
-    this.isDeleted = false;
-    this.save();
-    next();
-});
-
-const userModel = mongoose.model('user', userSchema)
-export default userModel
+const user = mongoose.model('user', userSchema)
+module.exports = { user }
