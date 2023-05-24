@@ -1,4 +1,6 @@
 const adminService = require('../services/admin.services')
+const hashPassword = require('../utils/bcrypt')
+const verifyPassword = require('../utils/bcrypt')
 
 class AdminController{
     //create an user     
@@ -12,10 +14,12 @@ class AdminController{
                 if (existingAdmin){
                     return res.status(404).send({message: 'Admin already exist' || err.message, success: false})
                 } 
+                const safePassword = await hashPassword(password)
+
                 const admin = await adminService.createAdmin({
                     email_address: email_address,
                     // we will change this to the encrypted password later
-                    password: password,
+                    password: safePassword,
                 })
                 return res.status(200).send({message: 'Admin registered in successfully', admin, success: true })
             }catch(error){
@@ -36,8 +40,14 @@ class AdminController{
                     if (!password) {
                         return res.status(404).send({message: 'Please input your password to continue'})   
                     }
+                    const isValid = await verifyPassword(password, admin.password)
+                    if (!isValid) {
+                        return res.status(404).send({
+                            message: 'Incorrect password, please retype your password',
+                            status: 'failed'
+                        })
+                    }
 
-                    // we will come back to if the user's password is correct
                     
                 }catch(error){
                     console.error(error)
