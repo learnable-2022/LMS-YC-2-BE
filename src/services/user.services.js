@@ -13,7 +13,7 @@ class userService {
         )
     }
 
-    async getAUser(id) {
+    async getAUserById(id) {
         //get a single user by id
         return await users.findById(id, { _id: 1, password: 0 });
     }
@@ -21,6 +21,16 @@ class userService {
     async deleteUser(id) {
         // delete a user
         return await users.findByIdAndDelete(id)
+    }
+
+    async getAUserByEmail(data) {
+        //get a single user by id
+        return await users.findOne(data, { _id: 1, password: 0 });
+    }
+
+    async updateUser(id, data) {
+        // delete a user
+        return await users.findByIdAndUpdate(id, data)
     }
 }
 module.exports = new userService();
