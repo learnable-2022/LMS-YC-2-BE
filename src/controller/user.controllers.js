@@ -1,5 +1,6 @@
 const hashPassword = require('../utils/bcrypt')
 const { isValidId } = require('../utils/validateID')
+const { MESSAGES } = require('../config/constant.config')
 const {
     createUser,
     getAUserById,
@@ -17,7 +18,7 @@ class userControllers {
             if (findUserEmail) {
                 return res.status(400).send({
                     success: false,
-                    message: 'User already exists'
+                    message: MESSAGES.USER.DUPLICATE_EMAIL
                 })
             } else {
                 const encrypted_Password = await hashPassword(password)
@@ -27,13 +28,13 @@ class userControllers {
                 })
                 return res.status(200).send({
                     success: true,
-                    message: 'User created'
+                    message: MESSAGES.USER.CREATED
                 })
             }
         } catch (err) {
             return {
                 success: false,
-                message: err.message
+                message: MESSAGES.USER.ERROR + err.message
             };
         }
     }
@@ -45,7 +46,10 @@ class userControllers {
 
 
         } catch (err) {
-
+            return {
+                success: false,
+                message: MESSAGES.USER.ERROR + err.message
+            };
         }
     }
 
@@ -62,29 +66,29 @@ class userControllers {
                     if (deleted) {
                         return res.status(200).send({
                             success: true,
-                            message: "user deleted successfully"
+                            message: MESSAGES.USER.ACCOUNT_DELETED
                         })
                     } else {
                         return res.status(409).send({
                             success: false,
-                            message: "user deletion unsuccessfully"
+                            message: MESSAGES.USER.NOT_ACCOUNT_DELETED
                         })
                     }
                 } else {
                     return res.status(200).send({
                         success: false,
-                        message: "user does not exist"
+                        message: MESSAGES.USER.ACCOUNT_NOT_REGISTERED
                     })
                 }
             } else {
                 return res.status(404).send({
                     success: false,
-                    message: "Invalid id inputted"
+                    message: MESSAGES.USER.INCORRECT_DETAILS
                 })
             }
         } catch (err) {
             return {
-                message: err.message,
+                message: MESSAGES.USER.ERROR + err.message,
                 success: false,
             };
         }
@@ -103,24 +107,24 @@ class userControllers {
                     if (updated) {
                         return res.status(200).send({
                             success: true,
-                            message: "user updated successfully"
+                            message: MESSAGES.USER.ACCOUNT_UPDATED
                         })
                     } else {
                         return res.status(409).send({
-                            success: true,
-                            message: "user update failed"
+                            success: false,
+                            message: MESSAGES.USER.NOT_UPDATED
                         })
                     }
                 } else {
                     return res.status(400).send({
-                        success: true,
-                        message: "user does not exist"
+                        success: false,
+                        message: MESSAGES.USER.INCORRECT_DETAILS
                     })
                 }
             }
         } catch (error) {
             return {
-                message: err.message,
+                message: MESSAGES.USER.ERROR + err.message,
                 success: false,
             };
         }
@@ -138,18 +142,18 @@ class userControllers {
                 if (findUser) {
                     return res.status(200).send({
                         success: true,
-                        message: "user found successfully",
+                        message: MESSAGES.USER.USER_FOUND,
                         data: findUser
                     })
                 }
                 return res.status(400).send({
                     success: false,
-                    message: "user not found"
+                    message: MESSAGES.USER.USER_NOT_FOUND
                 })
             }
         } catch (error) {
             return {
-                message: err.message,
+                message: MESSAGES.USER.ERROR + err.message,
                 success: false,
             };
         }
@@ -163,18 +167,18 @@ class userControllers {
             if (getUsers) {
                 return res.status(200).send({
                     success: true,
-                    message: "all users found",
-                    data: getAllUsers
+                    message: MESSAGES.USER.USER_FOUND,
+                    data: getUsers
                 })
             }
             return res.status(400).send({
                 success: false,
-                message: "no users found"
+                message: MESSAGES.USER.USER_NOT_FOUND
             })
         }
         catch (error) {
             return {
-                message: err.message,
+                message: MESSAGES.USER.ERROR + err.message,
                 success: false,
             };
         }
