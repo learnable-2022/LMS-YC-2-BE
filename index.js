@@ -11,6 +11,7 @@ const router = require('./src/routes/index.routes')
 
 const PORT = process.env.PORT
 
+
 // Set up express-session middleware
 app.use(session({
     secret: process.env.SECRET_KEY,
@@ -23,6 +24,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // use the routes
+app.use(express.json())
 app.use('/api', router)
 
 app.listen(PORT, () => {
