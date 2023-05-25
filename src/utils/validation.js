@@ -16,7 +16,7 @@ const adminSchema = Joi.object({
     
 })
 
-const validateUserInputs = (req, res, next) => {
+const validateUserInputs = (req, res) => {
     try {
         const validateInput = userSchema.validate(req.body)
   
@@ -28,13 +28,13 @@ const validateUserInputs = (req, res, next) => {
           })
         } else {
           console.log("Validated successfully");
-          next()
+          
         } 
       } catch (err) {
           console.error(err)
       }
   }
-  const validateAdminInputs = (req, res, next) => {
+  const validateAdminInputs = (req, res ) => {
     try {
         const validateInput = adminSchema.validate(req.body)
   
@@ -46,7 +46,7 @@ const validateUserInputs = (req, res, next) => {
           })
         } else {
           console.log("Validated successfully");
-          next()
+         
         } 
       } catch (err) {
           console.error(error)

@@ -7,23 +7,24 @@ class AdminController {
     async registerAdmin(req, res) {
         const { email_address, password } = req.body
         try {
+
             // check if admin exist 
             const existingAdmin = await adminService.getAdmin({
                 email_address: email_address
             })
             if (existingAdmin) {
-                return res.status(404).send({ message: 'Admin already exist' || err.message, success: false })
+                return res.status(409).send({ message: 'Admin already exist' , success: false })
             }
             const safePassword = await hashPassword(password)
+            //console.log(`${email_address}`)
 
             const admin = await adminService.createAdmin({
                 email_address: email_address,
-                // we will change this to the encrypted password later
                 password: safePassword,
             })
             return res.status(200).send({ message: 'Admin registered in successfully', admin, success: true })
         } catch (error) {
-            console.error(error)
+            return res.status(500).send({ message: 'An error occurred', success: false })
         }
     }
     async loginAdmin(req, res) {
@@ -60,7 +61,7 @@ class AdminController {
         try {
             const admins = await adminService.getAllAdmin({})
             if (!admins) {
-                return res.status(404).send({ message: 'Admins not found' || err.message, success: false })
+                return res.status(404).send({ message: 'Admins not found' , success: false })
             } else {
                 return res.status(200).send({ message: 'Admins found successfully', admins })
             }
