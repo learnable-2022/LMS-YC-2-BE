@@ -6,16 +6,14 @@ class userService {
         return await users.create(data);
     }
 
-    async getAllUsers() {
-        //fetch all users
-        return await users.find(
-            { _id: 1, password: 0 }
-        )
-    }
-
     async getAUserById(id) {
         //get a single user by id
         return await users.findById(id, { _id: 1, password: 0 });
+    }
+
+    async getAllUsers() {
+        //get all users
+        return await users.find({ _id: 1, password: 0 })
     }
 
     async deleteUser(id) {
