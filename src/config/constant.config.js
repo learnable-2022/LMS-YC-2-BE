@@ -1,4 +1,4 @@
-export const MESSAGES = {
+const MESSAGES = {
     DATABASE: {
         CONNECTED: "MongoDB is connected :)",
         ERROR: "An error occured while connecting to database "
