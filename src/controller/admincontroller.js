@@ -91,8 +91,9 @@ class AdminController {
         }
 
     }
-    // edit a user
-    async updateAdmin(req, res) {
+
+    // edit an admin
+    async updateAdmin(req, res){
         const adminId = req.params.id
         const { email_address, password } = req.body
         // check by id if an admin exists
@@ -117,8 +118,9 @@ class AdminController {
         }
 
     }
-    // delete a user
-    async deleteOne(req, res) {
+
+    // delete an admin
+    async  deleteOne (req,res) {
         const AdminId = req.params.id
         // check if an admin exist before deleting
         try {
