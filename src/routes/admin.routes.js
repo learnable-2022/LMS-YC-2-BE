@@ -1,15 +1,16 @@
-const {Router} = require('express')
-const {validateAdminInputs} = require('../utils/validation')
+const { Router } = require('express')
+const { validateAdminInputs } = require('../utils/validation')
 const adminRouter = Router()
+const passport = require('../middleware/authenticate')
 
-const  {
+const {
     registerAdmin,
     loginAdmin,
     getOneAdmin,
     getAdmins,
     updateAdmin,
     deleteOne,
-    
+
 
 } = adminController = require('../controller/admincontroller')
 
