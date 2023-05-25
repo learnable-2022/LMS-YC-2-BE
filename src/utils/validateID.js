@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb')
 
-export const isValidId = (id) => {
+const isValidId = (id) => {
     return ObjectId.isValid(id);
 };
+module.exports = isValidId
