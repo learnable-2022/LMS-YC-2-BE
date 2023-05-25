@@ -1,6 +1,8 @@
 const hashPassword = require('../utils/bcrypt')
 const { isValidId } = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
+const verifyUserPassword = require('../utils/bcrypt')
+
 const {
     createUser,
     getAUserById,
@@ -44,7 +46,23 @@ class userControllers {
         try {
             const { email, password } = req.body
 
+            const user = await getAUserByEmail({
+                email: email
+            })
+            if (!user) {
+                return res.status(404).send({ message: 'Please register your details before logging in' || err.message, success: false })
+            }
 
+            if (!password) {
+                return res.status(404).send({ message: 'Please input your password to continue' })
+            }
+            const isValid = await verifyUserPassword(password, user.password)
+            if (!isValid) {
+                return res.status(404).send({
+                    message: 'Incorrect password, please retype your password',
+                    status: 'failed'
+                })
+            }
         } catch (err) {
             return {
                 success: false,
