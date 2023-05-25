@@ -7,6 +7,7 @@ const app = express();
 require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
+const router = require('./src/routes/index.routes')
 
 const PORT = process.env.PORT
 
@@ -20,6 +21,9 @@ app.use(session({
 // Set up Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// use the routes
+app.use('/api', router)
 
 app.listen(PORT, () => {
     console.log(`🚀 ${'Server up and running'.green}`);
