@@ -14,7 +14,10 @@ class AdminController {
                 email_address: email_address
             })
             if (existingAdmin) {
-                return res.status(404).send({ message: 'Admin already exist' || err.message, success: false })
+                return res.status(404).send({
+                    message: 'Admin already exist' || err.message,
+                    success: false
+                })
             }
             const salt = await bcrypt.genSalt(rounds);
             const hidden_Password = await bcrypt.hash(password, salt);
@@ -24,7 +27,10 @@ class AdminController {
             })
             return res.status(200).send({ message: 'Admin registered in successfully', admin, success: true })
         } catch (error) {
-            console.error(error)
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
         }
     }
     async loginAdmin(req, res) {
@@ -35,11 +41,17 @@ class AdminController {
                 email: email
             })
             if (!admin) {
-                return res.status(404).send({ message: 'Please register your details before logging in' || err.message, success: false })
+                return res.status(404).send({
+                    success: false,
+                    message: 'Please register your details before logging in' || err.message, success: false
+                })
             }
 
             if (!password) {
-                return res.status(404).send({ message: 'Please input your password to continue' })
+                return res.status(404).send({
+                    message: 'Please input your password to continue',
+                    success: false
+                })
             }
             const check = await bcrypt.compare(password, admin.password)
             if (!check) {
@@ -54,8 +66,10 @@ class AdminController {
                 })
             }
         } catch (error) {
-            console.error(error)
-
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
         }
     }
 
@@ -64,13 +78,22 @@ class AdminController {
         try {
             const admins = await adminService.getAllAdmin({})
             if (!admins) {
-                return res.status(404).send({ message: 'Admins not found' || err.message, success: false })
+                return res.status(404).send({
+                    message: 'Admins not found' || err.message,
+                    success: false
+                })
             } else {
-                return res.status(200).send({ message: 'Admins found successfully', admins })
+                return res.status(200).send({
+                    message: 'Admins found successfully',
+                    data: admins
+                })
             }
 
         } catch (error) {
-            console.error(error)
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
         }
 
     }
@@ -83,15 +106,24 @@ class AdminController {
                 _id: adminId
             })
             if (!existingAdmin) {
-                return res.status(404).send({ message: 'Admin does not exist', success: false })
-
+                return res.status(404).send({
+                    message: 'Admin does not exist',
+                    success: false
+                })
             } else {
                 // returns true if the admin exist
-                return res.status(200).send({ message: 'Admin fetched successfully', success: true, data: existingAdmin });
+                return res.status(200).send({
+                    message: 'Admin fetched successfully',
+                    success: true,
+                    data: existingAdmin
+                });
             }
 
         } catch (error) {
-            console.error(error)
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
         }
 
     }
@@ -107,7 +139,10 @@ class AdminController {
                 _id: adminId
             })
             if (!existingAdmin) {
-                return res.status(404).send({ message: 'Admin does not exist', success: false })
+                return res.status(404).send({
+                    message: 'Admin does not exist',
+                    success: false
+                })
             }
             // update the user details to the current one
             const updatedAdmin = await adminService.editAdminById({
@@ -115,10 +150,16 @@ class AdminController {
                 password: password,
 
             })
-            return res.status(200).send({ message: 'Admin updated successfully', success: true, data: updatedAdmin });
+            return res.status(200).send({
+                message: 'Admin updated successfully',
+                success: true, data: updatedAdmin
+            });
 
         } catch (error) {
-            console.error(error)
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
         }
 
     }
@@ -132,14 +173,22 @@ class AdminController {
                 _Id: userId
             })
             if (!existingAdmin) {
-                return res.status(404).send({ message: 'Invalid Admin', success: false })
-
+                return res.status(404).send({
+                    message: 'Invalid Admin',
+                    success: false
+                })
             }
             // delete user if the above condition was met
             const deletedAdmin = await adminService.deleteAdminById(adminId)
-            return res.status(200).send({ message: 'Admin deleted', success: true, data: deletedAdmin })
+            return res.status(200).send({
+                message: 'Admin deleted', success: true,
+                data: deletedAdmin
+            })
         } catch (error) {
-            console.error(error)
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
         }
     }
 
