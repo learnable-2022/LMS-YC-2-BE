@@ -11,21 +11,24 @@ const {
     getAllUsers,
     getAUserByEmail
 } = require('../services/user.services')
+const rounds = parseInt(process.env.ROUNDS)
+
 
 class userControllers {
     async signUp(req, res) {
         try {
-            const { password } = req.body;
-            const findUserEmail = await getAUserByEmail({ email: req.body.email });
+            const { password, email } = req.body;
+            const findUserEmail = await getAUserByEmail({ email: email });
             if (findUserEmail) {
                 return res.status(400).send({
                     success: false,
                     message: MESSAGES.USER.DUPLICATE_EMAIL
                 })
             } else {
-                const encrypted_Password = await hashPassword(password)
-                await createUser({
-                    password: encrypted_Password,
+                const salt = await bcrypt.genSalt(rounds);
+                const hidden_Password = await bcrypt.hash(password, salt);
+                const user = await createUser({
+                    password: hidden_Password,
                     ...req.body
                 })
                 return res.status(200).send({
@@ -56,11 +59,16 @@ class userControllers {
             if (!password) {
                 return res.status(404).send({ message: 'Please input your password to continue' })
             }
-            const isValid = await verifyUserPassword(password, user.password)
-            if (!isValid) {
+            const check = await bcrypt.compare(password, user.password)
+            if (!check) {
                 return res.status(404).send({
                     message: 'Incorrect password, please retype your password',
                     status: 'failed'
+                })
+            } else {
+                return res.status(200).send({
+                    message: 'Login Successful',
+                    success: true,
                 })
             }
         } catch (err) {
