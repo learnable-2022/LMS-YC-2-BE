@@ -1,6 +1,8 @@
 const adminService = require('../services/admin.services')
+const bcrypt = require('bcrypt')
 const hashPassword = require('../utils/bcrypt')
 const verifyPassword = require('../utils/bcrypt')
+const rounds = parseInt(process.env.ROUNDS)
 
 class AdminController {
     //create an user     
@@ -14,12 +16,11 @@ class AdminController {
             if (existingAdmin) {
                 return res.status(404).send({ message: 'Admin already exist' || err.message, success: false })
             }
-            const safePassword = await hashPassword(password)
-
+            const salt = await bcrypt.genSalt(rounds);
+            const hidden_Password = await bcrypt.hash(password, salt);
             const admin = await adminService.createAdmin({
                 email_address: email_address,
-                // we will change this to the encrypted password later
-                password: safePassword,
+                password: hidden_Password,
             })
             return res.status(200).send({ message: 'Admin registered in successfully', admin, success: true })
         } catch (error) {
@@ -27,11 +28,11 @@ class AdminController {
         }
     }
     async loginAdmin(req, res) {
-        const { username, password } = req.body
+        const { email, password } = req.body
         try {
             // check if the admin exist
             const admin = await adminService.getAdmin({
-                name: username
+                email: email
             })
             if (!admin) {
                 return res.status(404).send({ message: 'Please register your details before logging in' || err.message, success: false })
@@ -40,15 +41,18 @@ class AdminController {
             if (!password) {
                 return res.status(404).send({ message: 'Please input your password to continue' })
             }
-            const isValid = await verifyPassword(password, admin.password)
-            if (!isValid) {
-                return res.status(404).send({
+            const check = await bcrypt.compare(password, admin.password)
+            if (!check) {
+                return res.status(409).send({
                     message: 'Incorrect password, please retype your password',
-                    status: 'failed'
+                    success: false
+                })
+            } else {
+                return res.status(200).send({
+                    message: 'Login Successful',
+                    success: true,
                 })
             }
-
-
         } catch (error) {
             console.error(error)
 
@@ -93,7 +97,7 @@ class AdminController {
     }
 
     // edit an admin
-    async updateAdmin(req, res){
+    async updateAdmin(req, res) {
         const adminId = req.params.id
         const { email_address, password } = req.body
         // check by id if an admin exists
@@ -120,7 +124,7 @@ class AdminController {
     }
 
     // delete an admin
-    async  deleteOne (req,res) {
+    async deleteOne(req, res) {
         const AdminId = req.params.id
         // check if an admin exist before deleting
         try {
