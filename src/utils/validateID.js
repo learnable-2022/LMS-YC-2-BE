@@ -1,6 +1,10 @@
-const { ObjectId } = require('mongodb')
+const { ObjectId } = require('mongodb');
 
-const isValidId = (id) => {
-    return ObjectId.isValid(id);
+const checkValidId = (id) => {
+    try {
+        return ObjectId.isValid(id);
+    } catch (error) {
+        return false;
+    }
 };
-module.exports = isValidId
+module.exports = checkValidId

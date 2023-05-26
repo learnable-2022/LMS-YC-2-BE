@@ -4,17 +4,18 @@ class adminService {
 
     async createAdmin(newAdmin) {
         // create an admin
-        return await Admin.create(newAdmin)
+        await Admin.create(newAdmin)
+        return await Admin.find(data, { _id: 1, password: 0 })
     }
 
     // get all Admin
     async getAllAdmin(filter) {
-        return await Admin.find(filter)
+        return await Admin.find(filter, { _id: 1, password: 0 })
     }
 
     // get a single admin
     async getAdmin(filter) {
-        return await Admin.findOne(filter);
+        return await Admin.findOne(filter, { _id: 1, password: 0 });
     }
 
     // edit an admin by id

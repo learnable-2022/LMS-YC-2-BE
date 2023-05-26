@@ -1,7 +1,5 @@
 const adminService = require('../services/admin.services')
 const bcrypt = require('bcrypt')
-const hashPassword = require('../utils/bcrypt')
-const verifyPassword = require('../utils/bcrypt')
 const rounds = parseInt(process.env.ROUNDS)
 
 class AdminController {

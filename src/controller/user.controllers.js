@@ -1,7 +1,7 @@
-const hashPassword = require('../utils/bcrypt')
-const { isValidId } = require('../utils/validateID')
+const checkValidId  = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
-const verifyUserPassword = require('../utils/bcrypt')
+const usersServices = require('../services/user.services')
+const bcrypt = require('bcrypt')
 
 const {
     createUser,
@@ -10,7 +10,7 @@ const {
     updateUser,
     getAllUsers,
     getAUserByEmail
-} = require('../services/user.services')
+} = usersServices
 const rounds = parseInt(process.env.ROUNDS)
 
 
@@ -19,24 +19,28 @@ class userControllers {
         try {
             const { password, email } = req.body;
             const findUserEmail = await getAUserByEmail({ email: email });
-            if (findUserEmail) {
-                return res.status(400).send({
-                    success: false,
-                    message: MESSAGES.USER.DUPLICATE_EMAIL
-                })
-            } else {
-                const salt = await bcrypt.genSalt(rounds);
-                const hidden_Password = await bcrypt.hash(password, salt);
-                const user = await createUser({
-                    password: hidden_Password,
-                    ...req.body
-                })
-                return res.status(200).send({
-                    success: true,
-                    message: MESSAGES.USER.CREATED
-                })
+            if (findUserEmail || !email) {
+                return res.status(400).send({ success: false, message: MESSAGES.USER.DUPLICATE_EMAIL });
             }
-        } catch (err) {
+            if (!password) {
+                return res.status(400).send({ success: false, message: MESSAGES.USER.INCORRECT_DETAILS });
+
+            }
+
+            const salt = await bcrypt.genSalt(rounds);
+            const hidden_Password = await bcrypt.hash(password, salt);
+            const user = await createUser({
+                ...req.body,
+                password: hidden_Password,
+            });
+            return res.status(200).send({
+                success: true,
+                message: MESSAGES.USER.CREATED,
+                data: user
+            });
+
+        }
+        catch (err) {
             return {
                 success: false,
                 message: MESSAGES.USER.ERROR + err.message
@@ -45,13 +49,14 @@ class userControllers {
     }
 
     //loginIn user
-    async login(req, res, next) {
+    async login(req, res) {
         try {
             const { email, password } = req.body
 
             const user = await getAUserByEmail({
                 email: email
             })
+
             if (!user) {
                 return res.status(404).send({ message: 'Please register your details before logging in' || err.message, success: false })
             }
@@ -59,16 +64,16 @@ class userControllers {
             if (!password) {
                 return res.status(404).send({ message: 'Please input your password to continue' })
             }
-            const check = await bcrypt.compare(password, user.password)
-            if (!check) {
-                return res.status(404).send({
-                    message: 'Incorrect password, please retype your password',
-                    status: 'failed'
-                })
-            } else {
+            const check = await bcrypt.compare(req.body.password, user.password)
+            if (check) {
                 return res.status(200).send({
                     message: 'Login Successful',
                     success: true,
+                })
+            } else {
+                return res.status(409).send({
+                    message: 'Incorrect password',
+                    status: false
                 })
             }
         } catch (err) {
@@ -83,10 +88,13 @@ class userControllers {
     async removeUser(req, res) {
         try {
             const { id } = req.params
-            const check = isValidId(id)
+            console.log(req.params);
+            //check if the user exists
+            const check = checkValidId(id)
+            console.log(check);
             if (check) {
-                //check if the user exists
                 const findUser = await getAUserById(id)
+                console.log(findUser);
                 if (findUser) {
                     const deleted = await deleteUser(id)
                     if (deleted) {
@@ -107,9 +115,9 @@ class userControllers {
                     })
                 }
             } else {
-                return res.status(404).send({
+                return res.status(409).send({
                     success: false,
-                    message: MESSAGES.USER.INCORRECT_DETAILS
+                    message: MESSAGES.USER.INVALID_ID
                 })
             }
         } catch (err) {
@@ -125,9 +133,10 @@ class userControllers {
         try {
             const { id } = req.params
             //check  if valid id
-            const check = isValidId(id)
+            const check = checkValidId(id)
             if (check) {
                 const findUser = await getAUserById(id)
+                console.log(findUser);
                 if (findUser) {
                     const updated = await updateUser(id, req.body)
                     if (updated) {
@@ -144,9 +153,14 @@ class userControllers {
                 } else {
                     return res.status(400).send({
                         success: false,
-                        message: MESSAGES.USER.INCORRECT_DETAILS
+                        message: MESSAGES.USER.ACCOUNT_NOT_REGISTERED
                     })
                 }
+            } else {
+                return res.status(400).send({
+                    success: false,
+                    message: MESSAGES.USER.INCORRECT_DETAILS
+                })
             }
         } catch (error) {
             return {
@@ -162,7 +176,7 @@ class userControllers {
         try {
             const { id } = req.params
             //check  if valid id
-            const check = isValidId(id)
+            const check = checkValidId(id)
             if (check) {
                 const findUser = await getAUserById(id)
                 if (findUser) {
