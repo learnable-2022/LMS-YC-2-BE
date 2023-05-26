@@ -12,7 +12,8 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true
+        unique: true,
+        lowercase: true,
     },
 
     relationship: {
@@ -42,13 +43,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         trim: true,
-        minlength: 5,
         required: true,
     },
 
 },
-    { immutable: true },
     { timestamps: true }
 );
 const user = mongoose.model('user', userSchema)
-module.exports = { user }
+module.exports = user
