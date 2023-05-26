@@ -16,7 +16,7 @@ const {
 
 userRouter.post('/user/register', validateUserInputs, signUp)
 userRouter.post('/user/login', validateUserLoginInputs, login)
-userRouter.get('/users', fetchAllUsers)
+userRouter.get('/user', fetchAllUsers)
 userRouter.get('/user/:id', findAUser)
 userRouter.patch('/user/:id', updateAUser)
 userRouter.delete('/user/:id', removeUser)

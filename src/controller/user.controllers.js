@@ -1,4 +1,4 @@
-const checkValidId  = require('../utils/validateID')
+const checkValidId = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
 const bcrypt = require('bcrypt')
@@ -19,12 +19,17 @@ class userControllers {
         try {
             const { password, email } = req.body;
             const findUserEmail = await getAUserByEmail({ email: email });
-            if (findUserEmail || !email) {
+            if (!email) {
+                return res.status(404).send({
+                    message: 'Enter email address',
+                    success: false
+                })
+            }
+            if (findUserEmail) {
                 return res.status(400).send({ success: false, message: MESSAGES.USER.DUPLICATE_EMAIL });
             }
             if (!password) {
                 return res.status(400).send({ success: false, message: MESSAGES.USER.INCORRECT_DETAILS });
-
             }
 
             const salt = await bcrypt.genSalt(rounds);
@@ -33,17 +38,22 @@ class userControllers {
                 ...req.body,
                 password: hidden_Password,
             });
-            return res.status(200).send({
-                success: true,
-                message: MESSAGES.USER.CREATED,
-                data: user
-            });
+            return user
+                ? res.status(201).send({
+                    message: 'User created successfully',
+                    success: true,
+                    user
+                })
+                : res.status(400).send({
+                    message: 'user not created',
+                    success: false
+                });
 
         }
-        catch (err) {
+        catch (error) {
             return {
                 success: false,
-                message: MESSAGES.USER.ERROR + err.message
+                message: MESSAGES.USER.ERROR + Error.message
             };
         }
     }
@@ -136,7 +146,6 @@ class userControllers {
             const check = checkValidId(id)
             if (check) {
                 const findUser = await getAUserById(id)
-                console.log(findUser);
                 if (findUser) {
                     const updated = await updateUser(id, req.body)
                     if (updated) {
@@ -218,7 +227,7 @@ class userControllers {
         }
         catch (error) {
             return {
-                message: MESSAGES.USER.ERROR + err.message,
+                message: MESSAGES.USER.ERROR + error.message,
                 success: false,
             };
         }

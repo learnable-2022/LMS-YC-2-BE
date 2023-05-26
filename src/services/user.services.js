@@ -14,7 +14,7 @@ class userService {
 
     async getAllUsers() {
         //get all users
-        return await users.find({ _id: 1, password: 0 })
+        return await users.find({}, { _id: 1, password: 0 })
     }
 
     async deleteUser(id) {
