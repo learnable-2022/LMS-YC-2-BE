@@ -2,7 +2,7 @@ const checkValidId = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
 const bcrypt = require('bcrypt')
-
+const passport = require('passport')
 const {
     createUser,
     getAUserById,
@@ -59,40 +59,46 @@ class userControllers {
     }
 
     //loginIn user
-    async login(req, res) {
-        try {
-            const { email, password } = req.body
+    async login(req, res, next) {
+        passport.authenticate('local', function (err, user) {
 
-            const user = await getAUserByEmail({
-                email: email
-            })
-
+            if (err) {
+                return res.status(500).send({
+                    message: 'Internal Server Error' + err, success: false
+                });
+            }
             if (!user) {
-                return res.status(404).send({ message: 'Please register your details before logging in' || err.message, success: false })
+                return res.status(404).send({
+                    message: MESSAGES.USER.INCORRECT_DETAILS,
+                    success: false
+                });
             }
+            req.login(user, function (err) {
+                if (err) {
+                    return res.status(500).send({
+                        message: 'Internal Server Error', success: false
+                    });
+                }
+                return res.status(200).send({ message: 'Login Successful', success: true });
+            });
+        })(req, res, next);
+    };
 
-            if (!password) {
-                return res.status(404).send({ message: 'Please input your password to continue' })
+
+    //logout user
+    async loggedout(req, res, next) {
+        req.logout(function (err) {
+            if (err) {
+                return next(err);
             }
-            const check = await bcrypt.compare(req.body.password, user.password)
-            if (check) {
-                return res.status(200).send({
-                    message: 'Login Successful',
-                    success: true,
-                })
-            } else {
-                return res.status(409).send({
-                    message: 'Incorrect password',
-                    status: false
-                })
-            }
-        } catch (err) {
-            return {
-                success: false,
-                message: MESSAGES.USER.ERROR + err.message
-            };
-        }
-    }
+            return res.status(200).send({
+                message: 'Loggedout Successful',
+                success: true
+            });
+        });
+    };
+
+
 
     //delete user
     async removeUser(req, res) {

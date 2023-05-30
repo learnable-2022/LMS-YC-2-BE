@@ -1,30 +1,86 @@
-const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const verifyPassword = require('../utils/bcrypt')
+const Users = require('../model/user.model');
+const Admin = require('../model/admin.model')
+const bcrypt = require('bcrypt')
+// const usersServices = require('../services/user.services')
+// const { getAUserByEmail } = usersServices
+const adminService = require('../services/admin.services')
 
-// Configure Passport LocalStrategy
-passport.use(new LocalStrategy(
-    function (username, password, done) {
-        // Here, you would typically query the database to find a user with the given username
-        // and then compare the password with the stored hash
-        User.findOne({ username: email }, function (err, user) {
-            if (err) { return done(err); }
-            if (!user) { return done(null, false); }
-            if (!user.verifyPassword(password)) { return done(null, false); }
-            return done(null, user);
-        });
+
+function initialise(passport, Users, Admin) {
+
+    const authenticateUser = async (email, password, done) => {
+        try {
+            let user = await Users.findOne({ email: email });
+            let adminUser = await Admin.findOne({ email: email });
+
+            if (!user && !adminUser) {
+                return done(null, false, { message: 'No user with such email' });
+            }
+
+            if (user) {
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (isMatch) {
+                    return done(null, user);
+                }
+            }
+
+            if (adminUser) {
+                const isMatch = await bcrypt.compare(password, adminUser.password);
+                if (isMatch) {
+                    return done(null, adminUser);
+                }
+            }
+
+            return done(null, false, { message: 'Incorrect password' });
+        } catch (error) {
+            return done(error);
+        }
     }
-));
 
-// Serialize and deserialize user instances to and from the session
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
-});
+    // Configure Passport LocalStrategy for Users
+    passport.use('local', new LocalStrategy({ usernameField: 'email' }, authenticateUser));
 
-passport.deserializeUser(function (id, done) {
-    User.findById(id, function (err, user) {
-        done(err, user);
+    // Configure Passport LocalStrategy for Admin
+    passport.use('local', new LocalStrategy({ usernameField: 'email' }, authenticateUser));
+
+    passport.serializeUser(function (user, done) {
+        if (user instanceof Users) {
+            done(null, { id: user.id, type: 'user' });
+        } else if (user instanceof Admin) {
+            done(null, { id: user.id, type: 'admin' });
+        } else {
+            done(new Error('Invalid user type'));
+        }
     });
-});
 
-module.exports = passport
+    passport.deserializeUser(async function (userObj, done) {
+        try {
+            if (userObj.type === 'user') {
+                const user = await Users.findById(userObj.id);
+                done(null, user);
+            } else if (userObj.type === 'admin') {
+                const adminUser = await Admin.findById(userObj.id);
+                done(null, adminUser);
+            } else {
+                done(new Error('Invalid user type'));
+            }
+        } catch (err) {
+            done(err);
+        }
+    });
+}
+
+module.exports = initialise;
+
+
+
+
+
+
+
+
+
+
+
+

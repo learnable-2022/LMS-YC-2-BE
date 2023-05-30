@@ -17,7 +17,7 @@ const loginUserSchema = Joi.object({
 })
 
 const adminSchema = Joi.object({
-  email_address: Joi.string().required(),
+  email: Joi.string().required(),
   password: Joi.string().required()
 
 })
@@ -33,11 +33,11 @@ const validateUserLoginInputs = (req, res, next) => {
         errormessage: validateInput.error.details[0].message
       })
     } else {
-      console.log("user login validated successfully");
+
       next()
     }
   } catch (err) {
-    console.error(err)
+    res.status(500).send(err)
   }
 }
 
@@ -52,11 +52,10 @@ const validateUserInputs = (req, res, next) => {
         errormessage: validateInput.error.details[0].message
       })
     } else {
-      console.log("User signup validated successfully");
       next()
     }
   } catch (err) {
-    console.error(err)
+    res.status(500).send(err)
   }
 }
 
@@ -71,12 +70,10 @@ const validateAdminInputs = (req, res, next) => {
         errormessage: validateInput.error.details[0].message
       })
     } else {
-      console.log("Admin Validated successfully");
       next()
     }
   } catch (err) {
-    console.error(err)
-
+    res.status(500).send(err)
   }
 }
 module.exports = { validateUserInputs, validateAdminInputs, validateUserLoginInputs }

@@ -1,16 +1,18 @@
 const adminService = require('../services/admin.services')
 const checkValidId = require('../utils/validateID')
+const { MESSAGES } = require('../config/constant.config')
 const bcrypt = require('bcrypt')
+const passport = require('passport')
 const rounds = +process.env.ROUNDS
 
 class AdminController {
     //create an user     
     async registerAdmin(req, res) {
-        const { email_address, password } = req.body
+        const { email, password } = req.body
         try {
             // check if admin exist 
             const existingAdmin = await adminService.getAdmin({
-                email_address: email_address
+                email: email
             })
 
             if (existingAdmin) {
@@ -20,7 +22,7 @@ class AdminController {
                 })
             }
 
-            if (!email_address || !password)
+            if (!email || !password)
                 return res.status(400).send({
                     message: 'Email address and password are required',
                     success: false
@@ -52,47 +54,44 @@ class AdminController {
         }
     }
 
-    async loginAdmin(req, res) {
-
-        try {
-            const { email_address, password } = req.body
-            // check if the admin exist
-            const admin = await adminService.getAdmin({
-                email_address: email_address
-            })
-            if (!admin) {
+    async login(req, res, next) {
+        passport.authenticate('local', function (err, user) {
+            if (err) {
+                return res.status(500).send({
+                    message: 'Internal Server Error' + err, success: false
+                });
+            }
+            if (!user) {
                 return res.status(404).send({
-                    success: false,
-                    message: 'Please register your details before logging in' || err.message, success: false
-                })
-            }
-
-            if (!password) {
-                return res.status(404).send({
-                    message: 'Please input your password to continue',
+                    message: "MESSAGES.USER.INCORRECT_DETAILS",
                     success: false
-                })
+                });
             }
+            req.login(user, function (err) {
+                if (err) {
+                    return res.status(500).send({
+                        message: 'Internal Server Error', success: false
+                    });
+                }
+                return res.status(200).send({ message: 'Login Successful', success: true });
+            });
+        })(req, res, next);
+    };
 
-            const check = await bcrypt.compare(password, admin.password)
-            if (!check) {
-                return res.status(409).send({
-                    message: 'Incorrect password, please retype your password',
-                    success: false
-                })
-            } else {
-                return res.status(200).send({
-                    message: 'Admin Login Successful',
-                    success: true,
-                })
+    //logout user
+    async loggedout(req, res, next) {
+        req.logout(function (err) {
+            if (err) {
+                return next(err);
             }
-        } catch (error) {
-            return res.status(500).send({
-                message: 'Error: ' + error.message,
-                success: false
-            })
-        }
-    }
+            return res.status(200).send({
+                message: 'Loggedout Successful',
+                success: true
+            });
+        });
+    };
+
+
 
     // get all admin
     async getAdmins(req, res) {

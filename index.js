@@ -1,22 +1,33 @@
 const express = require('express');
+
 const session = require('express-session');
-const passport = require('./src/middleware/authenticate')
+// const passport = require('./src/middleware/authenticate')
+
+const MongoStore = require('connect-mongo');
+const passport = require('passport')
+const initialise = require('./src/middleware/authenticate')
+
 const colors = require('colors');
 const database = require('./src/database/db')
 const app = express();
+app.use(express.urlencoded({ extended: true }))
+const Users = require('./src/model/user.model');
+const Admin = require('./src/model/admin.model');
+
 require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
 const router = require('./src/routes/index.routes')
-
 const PORT = process.env.PORT
 
-
+initialise(passport, Users, Admin)
 // Set up express-session middleware
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.DATABASE_URI, collectionName: "sessions" }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
 // Set up Passport middleware
