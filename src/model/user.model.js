@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const ROUNDS = +process.env.ROUNDS
-const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
     parent_name: {
