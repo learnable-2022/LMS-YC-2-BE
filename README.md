@@ -21,7 +21,7 @@ Latest version of the following:
 + MongoDB Atlas account.
 
 # Installations
-+ Open terminal and clone the repository (git clone <name of repo>)
++ Open terminal and clone the repository (git clone `name of repo`)
 + Download `Postman` or `ThunderClient` to simulate running the code as a user on the client side.
 + Install the dependencies by using `npm install`
 + Create a `.env` file in the root directory and set the following environment variables: PORT=3000, DATABASE_URI='mongodb+srv://yourCustomMongoDetails', SECRET_KEY='your-secret-key', COOKIE_SECRET: 'your_secret_cookie', ROUNDS: 10
