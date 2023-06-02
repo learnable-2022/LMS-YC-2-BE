@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-;
+const Admin = require('./admin.model')
+
 
 const courseSchema = new Schema({
   title: {
@@ -13,36 +14,15 @@ const courseSchema = new Schema({
     required: true,
     trim: true
   },
-  duration: {
-    type: String,
+  admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Admin, // Reference the Admin model
     required: true
   },
-  difficultyLevel: {
-    type: String,
-    enum: ['Beginner', 'Intermediate', 'Advanced'],
-    required: true
-  },
-  lessons: [{
-    title: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    content: {
-      type: String,
-      required: true
-    },
-    videoUrl: {
+    video: {
       type: String,
       required: true
     }
-  }],
-  
 },{ timestamps: true });
 
 
