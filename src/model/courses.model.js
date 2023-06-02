@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 const Admin = require('./admin.model')
 
 
@@ -23,8 +23,9 @@ const courseSchema = new Schema({
       type: String,
       required: true
     }
-},{ timestamps: true });
+  }],
 
+}, { timestamps: true });
 
 const Course = mongoose.model('Course', courseSchema);
 module.exports = Course;
