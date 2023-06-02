@@ -34,6 +34,12 @@ const userSchema = new Schema({
         trim: true,
     },
 
+    gender: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+
     DOB: {
         type: String,
         required: true,

@@ -2,6 +2,7 @@ const Joi = require('joi')
 const userSchema = Joi.object({
   parent_name: Joi.string().required(),
   email: Joi.string().required(),
+  gender: Joi.string().required(),
   relationship: Joi.string().required(),
   child_name: Joi.string().required(),
   child_class: Joi.string().required(),
