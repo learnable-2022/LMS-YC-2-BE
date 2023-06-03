@@ -1,5 +1,5 @@
 # LMS-YC-2-BE
-&lt;Group 2 Description>
+
 # LEARNZ
 This application is designed to serve as the backend for a Learning Management System (LMS) for Young Children within the age bracket of (7-13). It provides a reliable and efficient way to manage and deliver data for various LMS functionalities Learning management system. 
 
