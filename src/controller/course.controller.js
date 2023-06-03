@@ -20,7 +20,7 @@ class CourseController{
                     message: 'You are not eligible to create a course' , success: false
                 })
              }
-             //implement admin only priviledge
+             
              const course = await courseService.createCourse({ 
                 title: title, 
                 description: description,
@@ -102,8 +102,6 @@ class CourseController{
                         });
                 }
 
-                //implement admin only priviledge
-
                 // update the course details to the current one
                 const updatedCourse = await courseService.editCourseById({
                     title: title, 
@@ -135,7 +133,6 @@ class CourseController{
                 })
     
             }
-            //implement admin only priviledge
             
             // delete course if the above condition was met
             await courseService.deleteCourseById(id)
