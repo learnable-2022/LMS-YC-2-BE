@@ -79,7 +79,7 @@ class userControllers {
                         message: 'Internal Server Error', success: false
                     });
                 }
-                return res.status(200).send({ message: 'Login Successful', success: true });
+                return res.status(200).send({ message: 'Login Successful', user, success: true });
             });
         })(req, res, next);
     };
