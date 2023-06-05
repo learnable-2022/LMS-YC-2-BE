@@ -1,7 +1,7 @@
 const express = require('express');
 
 const session = require('express-session');
-const cloudinary = require('cloudinary').v2;
+//const cloudinary = require('cloudinary').v2;
 
 const MongoStore = require('connect-mongo');
 const passport = require('passport')
@@ -35,15 +35,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// cloudinary.config({
+//     cloud_name: process.env,
+//     api_key: process.env.CLOUDINARY_api_key,
+//     api_secret: process.env.CLOUDINARY_api_secret_key
+// });
+
 // use the routes
 app.use(express.json())
-
-cloudinary.config({
-    cloud_name: process.env,
-    api_key: process.env.CLOUDINARY_api_key,
-    api_secret: process.env.CLOUDINARY_api_secret_key
-});
-
 app.use('/api', router)
 
 app.listen(PORT, () => {

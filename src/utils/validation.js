@@ -23,6 +23,13 @@ const adminSchema = Joi.object({
 
 })
 
+const courseSchema = Joi.object({
+  title: Joi.string().required(),
+  description: Joi.string().required(),
+  video: Joi.string().required()
+
+})
+
 const validateUserLoginInputs = (req, res, next) => {
   try {
     const validateInput = loginUserSchema.validate(req.body)
@@ -77,7 +84,26 @@ const validateAdminInputs = (req, res, next) => {
     res.status(500).send(err)
   }
 }
-module.exports = { validateUserInputs, validateAdminInputs, validateUserLoginInputs }
+
+const validateCourseInputs = (req, res, next) => {
+  try {
+    const validateInput = courseSchema.validate(req.body)
+
+    if (validateInput.error) {
+      console.log("Validation failed")
+      return res.status(404).send({
+        success: false,
+        status: 'failed',
+        errormessage: validateInput.error.details[0].message,
+      })
+    } else {
+      next()
+    }
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+module.exports = { validateUserInputs, validateAdminInputs, validateUserLoginInputs, validateCourseInputs }
 
 
 

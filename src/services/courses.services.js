@@ -8,13 +8,13 @@ class courseService {
     }
 
     // get all courses
-    async getAllCourses(filter) {
-        return await Course.find(filter)
+    async getAllCourses() {
+        return await Course.find()
     }
 
     // get a single course 
     async getCourse(filter) {
-        return await Course.findOne(filter, { _id: 1});
+        return await Course.findOne(filter);
     }
 
     // edit a course by id
