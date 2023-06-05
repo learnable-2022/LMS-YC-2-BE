@@ -73,7 +73,12 @@ class AdminController {
                         message: 'Internal Server Error', success: false
                     });
                 }
-                return res.status(200).send({ message: 'Login Successful', user, success: true });
+                const { id, email } = user
+                return res.status(200).send({
+                    message: 'Login Successful',
+                    id, email,
+                    success: true
+                });
             });
         })(req, res, next);
     };

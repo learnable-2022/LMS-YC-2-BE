@@ -1,49 +1,54 @@
 const courseService = require('../services/courses.services')
 const adminService = require('../services/admin.services')
+const Course = require('../model/courses.model');
+const cloudinary = require('../lib/cloudinary')
+// const storage = require('../lib/multer')
 
 class CourseController {
     // create a course by an admin
     async createCourses(req, res) {
-        const { title, description, video } = req.body
+        const { title, description } = req.body;
         try {
-            const admin = req.session.passport.user.id
-            
-            
-            
-            //implementing cloudinary 
+            const admin = req.session.passport.user.id;
+            // Implementing Cloudinary
+            const uploadResult = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload(
+                    req.file.path,
+                    {
+                        resource_type: 'video',
+                        folder: 'video'
+                    },
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                            return reject(err);
+                        }
+                        resolve(result);
+                    }
+                );
+            });
 
-            // try {
-            //     const uploadResult = await cloudinary.uploader.upload(req.body.videoUrl, {
-            //         resource_type: 'video'
-            //     });
-            //     const course = await courseService.createCourse({
-            //         title: title,
-            //         description: description,
-            //         video: uploadResult.secure_url,
-            //         admin: admin._id
-            //     });
-            // } catch (error) {
-            //     return res.status(404).send({
-            //         message: 'video creation unsuccessfully',
-            //         success: false
-            //     })
-            // }
-            const course = await courseService.createCourse({
+            const newCourse = await courseService.createCourse({
                 title: title,
                 description: description,
-                video: video,
+                url: uploadResult.url,
+                cloudinary_id: uploadResult.public_id,
                 admin: admin
             });
-            return res.status(200).send({
-                message: 'Course created successfully', course, success: true
-            })
-        } catch {
-            return res.status(500).send({
-                message: 'An Error occured: ' + error.message,
+
+            return res.status(200).json({
+                message: 'Video uploaded and course created successfully',
+                newCourse,
+                success: true
+            });
+        } catch (error) {
+            return res.status(500).json({
+                message: 'An error occurred: ' + error.message,
                 success: false
-            })
+            });
         }
     }
+
 
     // get all lessons associated with a particular course
     async fetchAllCourses(req, res) {
@@ -51,12 +56,12 @@ class CourseController {
             const courses = await courseService.getAllCourses()
             if (!courses) {
                 return res.status(404).send({
-                    message: 'Courses not found' || err.message, 
+                    message: 'Courses not found' || err.message,
                     success: false
                 })
             } else {
                 return res.status(200).send({
-                    message: 'Courses found successfully', courses, 
+                    message: 'Courses found successfully', courses,
                     success: true
                 })
             }
@@ -80,7 +85,7 @@ class CourseController {
             if (!course) {
                 return res.status(404).send({
                     message: 'Course not found' || err.message,
-                     success: false
+                    success: false
                 });
             } else {
                 // returns true if a particular lesson for a course
@@ -115,14 +120,14 @@ class CourseController {
 
             // update the course details to the current one
             const updatedCourse = await courseService.editCourseById(id, {
-                
+
                 title: title,
-                description:description,
+                description: description,
                 video: video
             })
             return res.status(200).send({
-                message: 'Course updated successfully', 
-                success: true, 
+                message: 'Course updated successfully',
+                success: true,
                 data: updatedCourse
             });
         } catch (error) {
@@ -144,7 +149,7 @@ class CourseController {
             })
             if (!existingCourse) {
                 return res.status(404).send({
-                    message: 'No course found', 
+                    message: 'No course found',
                     success: false
                 })
 
