@@ -25,9 +25,7 @@ const adminSchema = Joi.object({
 
 const courseSchema = Joi.object({
   title: Joi.string().required(),
-  description: Joi.string().required(),
-  video: Joi.string().required()
-
+  description: Joi.string().required()
 })
 
 const validateUserLoginInputs = (req, res, next) => {

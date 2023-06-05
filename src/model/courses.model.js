@@ -21,7 +21,12 @@ const courseSchema = new Schema({
     required: true
   },
 
-  video: {
+  cloudinary_id: {
+    type: String,
+    required: true
+  },
+
+  url: {
     type: String,
     required: true
   }

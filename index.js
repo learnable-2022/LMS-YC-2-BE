@@ -1,8 +1,6 @@
 const express = require('express');
 
 const session = require('express-session');
-//const cloudinary = require('cloudinary').v2;
-
 const MongoStore = require('connect-mongo');
 const passport = require('passport')
 const initialise = require('./src/middleware/authenticate')
@@ -13,7 +11,6 @@ const app = express();
 app.use(express.urlencoded({ extended: true }))
 const Users = require('./src/model/user.model');
 const Admin = require('./src/model/admin.model');
-const { } = process.env
 
 require('dotenv').config();
 const cors = require('cors');
@@ -34,12 +31,6 @@ app.use(session({
 // Set up Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
-// cloudinary.config({
-//     cloud_name: process.env,
-//     api_key: process.env.CLOUDINARY_api_key,
-//     api_secret: process.env.CLOUDINARY_api_secret_key
-// });
 
 // use the routes
 app.use(express.json())
