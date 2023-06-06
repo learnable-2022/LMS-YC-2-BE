@@ -1,3 +1,8 @@
+const ENUM = {
+    VALUE: 'NULL',
+    REG: "UNREGISTERD",
+    COURSE: "NO COURSE"
+}
 const MESSAGES = {
     DATABASE: {
         CONNECTED: "MongoDB is connected :)",
@@ -26,4 +31,4 @@ const MESSAGES = {
     }
 }
 
-module.exports = { MESSAGES }
+module.exports = { MESSAGES, ENUM }

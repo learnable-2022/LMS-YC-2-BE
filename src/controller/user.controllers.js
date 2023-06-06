@@ -164,6 +164,7 @@ class userControllers {
                     if (updated) {
                         return res.status(200).send({
                             success: true,
+                            user: updated,
                             message: MESSAGES.USER.ACCOUNT_UPDATED
                         })
                     } else {

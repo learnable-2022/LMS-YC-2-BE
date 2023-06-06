@@ -1,6 +1,6 @@
 function checkStudentAuth(req, res, next) {
     if (req.isAuthenticated()) {
-        //check if the logged in user is a student
+        //check if the logged in user is a studten
         return next();;
     } else {
         return res.status(403).send({

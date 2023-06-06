@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { ENUM } = require('../config/constant.config')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -43,16 +44,18 @@ const userSchema = new Schema({
     path: {
         type: String,
         trim: true,
+        default: ENUM.VALUE
     },
 
     course: {
         type: String,
-        trim: true,
+        default: ENUM.COURSE
     },
 
     register: {
         type: String,
-        trim: true
+        trim: true,
+        default: ENUM.REG
     },
 
     DOB: {

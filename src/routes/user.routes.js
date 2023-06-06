@@ -15,7 +15,7 @@ const {
     loggedout
 } = userController = require('../controller/user.controllers')
 
- const {fetchAllCourses, 
+const { fetchAllCourses,
     getSingleCourse
 } = courseController = require('../controller/course.controller')
 
