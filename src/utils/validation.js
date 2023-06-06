@@ -3,6 +3,9 @@ const userSchema = Joi.object({
   parent_name: Joi.string().required(),
   email: Joi.string().required(),
   gender: Joi.string().required(),
+  path: Joi.string(),
+  register: Joi.string(),
+  course: Joi.string(),
   relationship: Joi.string().required(),
   child_name: Joi.string().required(),
   child_class: Joi.string().required(),
@@ -25,7 +28,11 @@ const adminSchema = Joi.object({
 
 const courseSchema = Joi.object({
   title: Joi.string().required(),
-  description: Joi.string().required()
+  description: Joi.string().required(),
+  week: Joi.string().required(),
+  resources: Joi.string(),
+  path: Joi.string().required(),
+
 })
 
 const validateUserLoginInputs = (req, res, next) => {
