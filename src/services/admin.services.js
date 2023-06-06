@@ -15,7 +15,7 @@ class adminService {
 
     // get a single admin
     async getAdmin(filter) {
-        return await Admin.findOne(filter, { _id: 1, password: 1 });
+        return await Admin.findOne(filter, { _id: 1, password: 0 });
     }
 
     // edit an admin by id
