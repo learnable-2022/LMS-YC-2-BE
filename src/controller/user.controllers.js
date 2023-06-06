@@ -73,14 +73,14 @@ class userControllers {
                     success: false
                 });
             }
-            req.login(user, function (err) {
+            req.login(user, async function (err) {
                 if (err) {
                     return res.status(500).send({
                         message: 'Internal Server Error', success: false
                     });
                 }
                 const { id } = user
-                const loggedin = getAUserById(id)
+                const loggedin = await getAUserById(id)
 
                 return res.status(200).send({
                     message: 'Login Successful',
