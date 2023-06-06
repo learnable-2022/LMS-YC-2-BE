@@ -181,9 +181,10 @@ class AdminController {
                 const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
                 // Update the admin's password
-                await adminService.editAdminById(id, { password: hashedPassword });
+                const updated = await adminService.editAdminById(id, { password: hashedPassword });
                 return res.status(200).send({
                     message: 'Admin updated successfully',
+                    admin: updated,
                     success: true
                 });
             } else {
