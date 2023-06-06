@@ -40,6 +40,21 @@ const userSchema = new Schema({
         trim: true,
     },
 
+    path: {
+        type: String,
+        trim: true,
+    },
+
+    course: {
+        type: String,
+        trim: true,
+    },
+
+    register: {
+        type: String,
+        trim: true
+    },
+
     DOB: {
         type: String,
         required: true,

@@ -21,6 +21,22 @@ const courseSchema = new Schema({
     required: true
   },
 
+  week: {
+    type: Number,
+    trim: true
+  },
+
+  resources: {
+    type: String,
+    trim: true
+  },
+
+  path: {
+    type: String,
+    trrim: true,
+    required: true
+  },
+
   cloudinary_id: {
     type: String,
     required: true
