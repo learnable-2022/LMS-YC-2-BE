@@ -1,9 +1,9 @@
 function checkStudentAuth(req, res, next) {
     if (req.isAuthenticated()) {
-        //check if user is logged in
+        // User is authenticated, proceed to the next middleware/route handler
         return next();
     } else {
-        return res.status(403).send({
+        return res.status(403).json({
             success: false,
             message: "Unauthorized access"
         });
@@ -11,3 +11,4 @@ function checkStudentAuth(req, res, next) {
 }
 
 module.exports = checkStudentAuth;
+
