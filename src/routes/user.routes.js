@@ -27,7 +27,7 @@ userRouter.get('/user/courses', checkStudentAuth, fetchAllCourses)
 userRouter.get('/user/courses/:id', checkStudentAuth, getSingleCourse)
 userRouter.get('/user', checkStudentAuth, fetchAllUsers)
 userRouter.get('/user/:id', checkStudentAuth, findAUser)
-userRouter.patch('/user/:id', checkStudentAuth, updateAUser)
+userRouter.patch('/user/:id', updateAUser)
 userRouter.delete('/user/:id', checkStudentAuth, removeUser)
 
 module.exports = userRouter
