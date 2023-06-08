@@ -14,10 +14,7 @@ const Admin = require('./src/model/admin.model');
 
 require('dotenv').config();
 const cors = require('cors');
-app.use(cors({
-    credentials: true,
-    origin: "*"
-}));
+app.use(cors());
 const router = require('./src/routes/index.routes')
 const PORT = process.env.PORT
 
