@@ -9,18 +9,12 @@ const colors = require('colors');
 const database = require('./src/database/db')
 const app = express();
 app.use(express.urlencoded({ extended: true }))
-const cors = require('cors');
-app.use(cors(
-    {
-        origin: '*',
-        credentials: true,
-    }
-));
 const Users = require('./src/model/user.model');
 const Admin = require('./src/model/admin.model');
 
 require('dotenv').config();
-
+const cors = require('cors');
+app.use(cors());
 const router = require('./src/routes/index.routes')
 const PORT = process.env.PORT
 
@@ -29,7 +23,6 @@ initialise(passport, Users, Admin)
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
-    sameSite: 'none',
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URI, collectionName: "sessions" }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
@@ -38,14 +31,6 @@ app.use(session({
 // Set up Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
 
 // use the routes
 app.use(express.json())
