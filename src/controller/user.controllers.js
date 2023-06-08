@@ -73,6 +73,7 @@ class userControllers {
                     success: false
                 });
             }
+            console.log(req.session);
             return req.login(user, async function (err) {
                 if (err) {
                     return res.status(500).send({

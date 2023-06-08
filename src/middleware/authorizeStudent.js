@@ -1,3 +1,4 @@
+const passport = require('passport')
 function checkStudentAuth(req, res, next) {
     if (req.isAuthenticated()) {
         // User is authenticated, proceed to the next middleware/route handler
