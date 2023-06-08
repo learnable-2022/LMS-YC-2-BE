@@ -36,7 +36,7 @@ const courseSchema = new Schema({
 
   path: {
     type: String,
-    trrim: true,
+    trim: true,
     default: ENUM.PATH,
     required: true
   },
