@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const Admin = require('./admin.model')
+const { ENUM } = require('../config/constant.config')
 
 const courseSchema = new Schema({
   title: {
@@ -23,17 +24,20 @@ const courseSchema = new Schema({
 
   week: {
     type: Number,
-    trim: true
+    trim: true,
+    default: ENUM.VALUE
   },
 
   resources: {
     type: String,
-    trim: true
+    trim: true,
+    default: ENUM.RESOURCES
   },
 
   path: {
     type: String,
     trrim: true,
+    default: ENUM.PATH,
     required: true
   },
 
