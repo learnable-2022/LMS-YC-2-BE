@@ -1,8 +1,8 @@
 const adminService = require('../services/admin.services')
 const checkValidId = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const passport = require('passport')
 const rounds = +process.env.ROUNDS
 
 class AdminController {
@@ -54,46 +54,53 @@ class AdminController {
         }
     }
 
-    async login(req, res, next) {
-        passport.authenticate('local', function (err, user) {
-            if (err) {
-                return res.status(500).send({
-                    message: 'Internal Server Error' + err, success: false
-                });
-            }
+    //loginIn user
+
+    async loginUser(req, res, next) {
+        try {
+
+            let user = await adminService.getAdmin({ email: req.body.email })
             if (!user) {
                 return res.status(404).send({
-                    message: "MESSAGES.USER.INCORRECT_DETAILS",
+                    message: MESSAGES.USER.INCORRECT_DETAILS,
                     success: false
                 });
             }
-            req.login(user, function (err) {
-                if (err) {
-                    return res.status(500).send({
-                        message: 'Internal Server Error', success: false
-                    });
-                }
-                const { id, email } = user
-                return res.status(200).send({
-                    message: 'Login Successful',
-                    id, email,
-                    success: true
+
+            if (!(await bcrypt.compare(req.body.password, user.password))) {
+                return res.status(403).send({
+                    message: MESSAGES.USER.INCORRECT_DETAILS,
+                    success: false
                 });
+            }
+            const token = jwt.sign(user.id, process.env.SECRET_KEY)
+            let { password, ...data } = await user
+            return res.status(200).send({
+                message: 'Login Successful',
+                success: true,
+                data,
+                token
             });
-        })(req, res, next);
+        } catch (err) {
+            return res.status(500).send({
+                message: 'Internal Server Error' + err,
+                success: false
+            });
+        }
     };
+
 
     //logout user
     async loggedout(req, res, next) {
-        req.logout(function (err) {
-            if (err) {
-                return next(err);
-            }
-            return res.status(200).send({
-                message: 'Loggedout Successful',
-                success: true
-            });
-        });
+        // req.logout(function (err) {
+        //     if (err) {
+        //         return next(err);
+        //     }
+        //     return res.status(200).send({
+        //         message: 'Loggedout Successful',
+        //         success: true
+        //     });
+        // });
     };
 
 
