@@ -10,7 +10,12 @@ const database = require('./src/database/db')
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 const cors = require('cors');
-app.use(cors());
+app.use(cors(
+    {
+        origin: '*',
+        credentials: true,
+    }
+));
 const Users = require('./src/model/user.model');
 const Admin = require('./src/model/admin.model');
 
