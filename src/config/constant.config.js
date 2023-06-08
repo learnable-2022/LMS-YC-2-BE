@@ -1,7 +1,10 @@
 const ENUM = {
     VALUE: 'NULL',
     REG: "UNREGISTERD",
-    COURSE: "NO COURSE"
+    COURSE: "NO COURSE",
+    RESOURCES: "NULL",
+    PATH: "NULL"
+
 }
 const MESSAGES = {
     DATABASE: {
