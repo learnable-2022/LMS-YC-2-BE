@@ -16,11 +16,7 @@ const courseSchema = new Schema({
     trim: true
   },
 
-  admin: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Admin, // Reference the Admin model
-    //required: true
-  },
+  
 
   week: {
     type: Number,
