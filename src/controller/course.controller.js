@@ -33,7 +33,7 @@ class CourseController {
                 ...req.body,
                 url: uploadResult.url,
                 cloudinary_id: uploadResult.public_id,
-                admin: admin,
+                //admin: admin,
                 
             });
 
