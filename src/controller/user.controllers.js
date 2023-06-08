@@ -1,8 +1,8 @@
 const checkValidId = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const passport = require('passport')
 const {
     createUser,
     getAUserById,
@@ -53,42 +53,43 @@ class userControllers {
         catch (error) {
             return {
                 success: false,
-                message: MESSAGES.USER.ERROR + Error.message
+                message: MESSAGES.USER.ERROR + Error.message,
             };
         }
     }
 
     //loginIn user
-    async login(req, res, next) {
-        passport.authenticate('local', function (err, user) {
+    async loginUser(req, res, next) {
+        try {
 
-            if (err) {
-                return res.status(500).send({
-                    message: 'Internal Server Error' + err, success: false
-                });
-            }
+            let user = await getAUserByEmail({ email: req.body.email })
             if (!user) {
                 return res.status(404).send({
                     message: MESSAGES.USER.INCORRECT_DETAILS,
                     success: false
                 });
             }
-            return req.login(user, async function (err) {
-                if (err) {
-                    return res.status(500).send({
-                        message: 'Internal Server Error', success: false
-                    });
-                }
-                const { id } = user
-                const loggedin = await getAUserById(id)
-                
-                return res.status(200).send({
-                    message: 'Login Successful',
-                    loggedin,
-                    success: true
+
+            if (!(await bcrypt.compare(req.body.password, user.password))) {
+                return res.status(403).send({
+                    message: MESSAGES.USER.INCORRECT_DETAILS,
+                    success: false
                 });
+            }
+            const token = jwt.sign(user.id, process.env.SECRET_KEY)
+            let { password, ...data } = await user
+            return res.status(200).send({
+                message: 'Login Successful',
+                success: true,
+                data,
+                token
             });
-        })(req, res, next);
+        } catch (err) {
+            return res.status(500).send({
+                message: 'Internal Server Error' + err,
+                success: false
+            });
+        }
     };
 
 

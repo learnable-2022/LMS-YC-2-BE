@@ -7,9 +7,8 @@ const cloudinary = require('../lib/cloudinary')
 class CourseController {
     // create a course by an admin
     async createCourses(req, res) {
-        const { title, description, week, resources, path } = req.body;
+        const { title } = req.body;
         try {
-            const admin = req.session.passport.user.id;
             // Implementing Cloudinary
             const uploadResult = await new Promise((resolve, reject) => {
                 cloudinary.uploader.upload(

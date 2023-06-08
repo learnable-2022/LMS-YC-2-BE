@@ -16,10 +16,10 @@ const courseSchema = new Schema({
     trim: true
   },
 
-  admin: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Admin, // Reference the Admin model
-  },
+  // admin: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: Admin, // Reference the Admin model
+  // },
 
   week: {
     type: Number,
