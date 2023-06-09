@@ -4,6 +4,7 @@ const { MESSAGES } = require('../config/constant.config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const rounds = +process.env.ROUNDS
+const duration = process.env.JWT_EXPIRES_IN
 
 class AdminController {
     //create an user     
@@ -56,7 +57,7 @@ class AdminController {
 
     //loginIn user
 
-    async loginUser(req, res, next) {
+    async loginAdmin(req, res, next) {
         try {
 
             let user = await adminService.getAdmin({ email: req.body.email })
@@ -73,12 +74,12 @@ class AdminController {
                     success: false
                 });
             }
-            const token = jwt.sign(user.id, process.env.SECRET_KEY)
-            let { password, ...data } = await user
+            const token = jwt.sign(user.id, process.env.SECRET_KEY, {expiresIn: duration})
+            let { password, ...data } = await user.toJSON()
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
-                data,
+                user: data,
                 token
             });
         } catch (err) {
@@ -90,17 +91,24 @@ class AdminController {
     };
 
 
-    //logout user
-    async loggedout(req, res, next) {
-        // req.logout(function (err) {
-        //     if (err) {
-        //         return next(err);
-        //     }
-        //     return res.status(200).send({
-        //         message: 'Loggedout Successful',
-        //         success: true
-        //     });
-        // });
+    //logout admin
+    async loggedOut(req, res, next) {
+        try{
+            const token = '';
+            await res.cookie("token", token, {httpOnly: true})
+            console.log("Admin logged out successfully")
+
+            return res.status(200).send({ 
+                message: "Admin logged out successfully",
+                token:token,
+                success: true 
+            })
+        }catch{
+            return res.status(500).send({
+                message: 'Internal Server Error' + err,
+                success: false
+                })
+        }
     };
 
 
