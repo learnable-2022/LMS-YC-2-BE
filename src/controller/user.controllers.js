@@ -64,7 +64,6 @@ class userControllers {
         try {
             const { email, password } = req.body
             let user = await getAUserByEmail({ email: email })
-            console.log(email)
             if (!user) {
                 return res.status(404).send({
                     message: MESSAGES.USER.INCORRECT_DETAILS,
