@@ -16,8 +16,6 @@ const courseSchema = new Schema({
     trim: true
   },
 
-  
-
   week: {
     type: Number,
     trim: true,

@@ -3,7 +3,7 @@ const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const duration = process.env.JWT_EXPIRES_IN
+
 const {
     createUser,
     getAUserById,
@@ -62,8 +62,8 @@ class userControllers {
     //loginIn user
     async loginUser(req, res, next) {
         try {
-
-            let user = await getAUserByEmail({ email: req.body.email })
+            const { email, password } = req.body
+            let user = await getAUserByEmail({ email: email })
             console.log(email)
             if (!user) {
                 return res.status(404).send({
@@ -71,19 +71,19 @@ class userControllers {
                     success: false
                 });
             }
-
-            if (!(await bcrypt.compare(req.body.password, user.password))) {
+            const check = await bcrypt.compare(password, user.password)
+            if (!check) {
                 return res.status(403).send({
-                    message: MESSAGES.USER.INCORRECT_DETAILS,
+                    message: "wrong password",
                     success: false
                 });
             }
-            const token = jwt.sign(user.id, process.env.SECRET_KEY, {expiresIn: duration})
-            let { password, ...data } = await user.toJSON()
+            const token = jwt.sign(user.id, process.env.SECRET_KEY)
+            // let { password, ...data } = await user.toJSON()
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
-                user: data,
+                user: user,
                 token
             });
         } catch (err) {
@@ -97,21 +97,21 @@ class userControllers {
 
     //logout user
     async loggedOut(req, res, next) {
-        try{
+        try {
             const token = '';
-            await res.cookie("token", token, {httpOnly: true})
+            await res.cookie("token", token, { httpOnly: true })
             console.log("User logged out successfully")
 
-            return res.status(200).send({ 
+            return res.status(200).send({
                 message: "User logged out successfully",
-                token:token,
-                success: true 
+                token: token,
+                success: true
             })
-        }catch{
+        } catch {
             return res.status(500).send({
                 message: 'Internal Server Error' + err,
                 success: false
-                })
+            })
         }
     };
 
