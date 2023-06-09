@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken')
-const userModel = require('../model/user.model')
+const adminModel = require('../model/admin.model')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 dotenv.config();
 
-// a middleware to autheticate users 
+// a middleware to autheticate admin 
 
-    const auth = async(req, res, next) => {
+    const authAdmin = async(req, res, next) => {
         try{
             console.log('first one')
             let token = ''
@@ -27,24 +27,24 @@ dotenv.config();
             const verified = jwt.verify(token, process.env.SECRET_KEY)
             if(!verified){
                 return res.status(401).send({
-                     message: 'User Verification failed', 
+                     message: 'Admin Verification failed', 
                      success: false 
                     })
             }
-            const user = await userModel.findOne({
+            const admin = await adminModel.findOne({
                 _id:verified._id, 
                 'tokens.token': token
             })
-            if(!user){
+            if(!admin){
                 return res.status(401).send({
                      message: 'You are not verified',
                      success: false 
                     })
             }
-            console.log('User Authentication successful')
+            console.log('Admin Authentication successful')
 
             req.token = token
-            req.user = user
+            req.user = admin
             next()
             
         }catch(error){
@@ -55,5 +55,5 @@ dotenv.config();
         
         }
     }
-    module.exports = auth
+    module.exports = authAdmin
     

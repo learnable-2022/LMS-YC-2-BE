@@ -3,6 +3,7 @@ const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const duration = process.env.JWT_EXPIRES_IN
 const {
     createUser,
     getAUserById,
@@ -63,6 +64,7 @@ class userControllers {
         try {
 
             let user = await getAUserByEmail({ email: req.body.email })
+            console.log(email)
             if (!user) {
                 return res.status(404).send({
                     message: MESSAGES.USER.INCORRECT_DETAILS,
@@ -76,12 +78,12 @@ class userControllers {
                     success: false
                 });
             }
-            const token = jwt.sign(user.id, process.env.SECRET_KEY)
-            let { password, ...data } = await user
+            const token = jwt.sign(user.id, process.env.SECRET_KEY, {expiresIn: duration})
+            let { password, ...data } = await user.toJSON()
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
-                data,
+                user: data,
                 token
             });
         } catch (err) {
@@ -94,18 +96,24 @@ class userControllers {
 
 
     //logout user
-    async loggedout(req, res, next) {
-        req.logout(function (err) {
-            if (err) {
-                return next(err);
-            }
-            return res.status(200).send({
-                message: 'Loggedout Successful',
-                success: true
-            });
-        });
-    };
+    async loggedOut(req, res, next) {
+        try{
+            const token = '';
+            await res.cookie("token", token, {httpOnly: true})
+            console.log("User logged out successfully")
 
+            return res.status(200).send({ 
+                message: "User logged out successfully",
+                token:token,
+                success: true 
+            })
+        }catch{
+            return res.status(500).send({
+                message: 'Internal Server Error' + err,
+                success: false
+                })
+        }
+    };
 
 
     //delete user
