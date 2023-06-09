@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
         next()
     } else {
         res.status(403)
-            .send({ message: err.message || MESSAGES.USER.UNAUTHORIZED, success: false }); // Restricting access if authorization fails 
+            .send({ message:MESSAGES.USER.UNAUTHORIZED, success: false }); // Restricting access if authorization fails 
     }
 }
 module.exports = auth
