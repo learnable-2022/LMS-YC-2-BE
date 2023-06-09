@@ -9,6 +9,7 @@ dotenv.config();
 
 const auth = async (req, res, next) => {
     try {
+        //checks if there is a header
         const bearHeader = req.headers['authorization']
         if (typeof bearHeader == 'undefined') {
             req.token = bearToken
@@ -25,7 +26,7 @@ const auth = async (req, res, next) => {
                 success: false
             })
         }
-        console.log('second one')
+        //using bcrypt to  compare the password
         const verified = jwt.verify(bearToken, process.env.SECRET_KEY, async (err, decoded) => {
             if (err) {
                 return res.status(401)

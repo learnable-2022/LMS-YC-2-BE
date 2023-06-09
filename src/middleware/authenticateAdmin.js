@@ -25,6 +25,8 @@ const authAdmin = async (req, res, next) => {
                 success: false
             })
         }
+
+        //using bcrypt to  compare the password
         const verified = jwt.verify(bearToken, process.env.SECRET_KEY, async (err, decoded) => {
             if (err) {
                 return res.status(401)
