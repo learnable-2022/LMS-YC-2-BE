@@ -31,9 +31,7 @@ class CourseController {
                 title: title,
                 ...req.body,
                 url: uploadResult.url,
-                cloudinary_id: uploadResult.public_id,
-                //admin: admin,
-                
+                cloudinary_id: uploadResult.public_id,                
             });
 
             return res.status(200).json({

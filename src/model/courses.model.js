@@ -19,7 +19,7 @@ const courseSchema = new Schema({
   week: {
     type: Number,
     trim: true,
-    default: ENUM.VALUE
+    default: ENUM.WEEK
   },
 
   resources: {
@@ -32,7 +32,6 @@ const courseSchema = new Schema({
     type: String,
     trim: true,
     default: ENUM.PATH,
-    required: true
   },
 
   cloudinary_id: {

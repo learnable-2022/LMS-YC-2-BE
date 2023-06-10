@@ -29,7 +29,7 @@ const adminSchema = Joi.object({
 const courseSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),
-  week: Joi.string().required(),
+  week: Joi.number().required(),
   resources: Joi.string(),
   path: Joi.string().required(),
   file: Joi.object()
