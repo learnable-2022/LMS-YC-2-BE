@@ -29,11 +29,10 @@ const adminSchema = Joi.object({
 const courseSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),
-  week: Joi.number().required(),
+  week: Joi.number(),
   resources: Joi.string(),
-  path: Joi.string().required(),
-  file: Joi.object()
-
+  path: Joi.string(),
+  file: Joi.object(),
 })
 
 const validateUserLoginInputs = (req, res, next) => {
