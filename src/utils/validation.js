@@ -32,6 +32,7 @@ const courseSchema = Joi.object({
   week: Joi.string().required(),
   resources: Joi.string(),
   path: Joi.string().required(),
+  file: Joi.string()
 
 })
 
