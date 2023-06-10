@@ -28,7 +28,7 @@ const courseSchema = new Schema({
     default: ENUM.RESOURCES
   },
 
-  path: {
+  track: {
     type: String,
     trim: true,
     default: ENUM.PATH,
