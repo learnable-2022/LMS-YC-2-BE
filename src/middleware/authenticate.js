@@ -32,7 +32,7 @@ const auth = async (req, res, next) => {
                 return res.status(401)
                     .send({
                         success: false,
-                        message: "INVALIDTOKEN" + err
+                        message: "INVALIDTOKEN"
                     });
             } else {
                 const user = await userModel.findById(decoded);
@@ -51,7 +51,7 @@ const auth = async (req, res, next) => {
 
     } catch (error) {
         return res.status(500).send({
-            message: 'Internal Server Error' + error,
+            message: 'Internal Server Error: No token found ' + error,
             success: false
         })
 

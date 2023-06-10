@@ -41,7 +41,7 @@ const userSchema = new Schema({
         trim: true,
     },
 
-    path: {
+    track: {
         type: String,
         trim: true,
         default: ENUM.VALUE
