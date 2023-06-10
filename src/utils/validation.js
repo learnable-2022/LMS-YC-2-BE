@@ -31,7 +31,7 @@ const courseSchema = Joi.object({
   description: Joi.string().required(),
   week: Joi.number(),
   resources: Joi.string(),
-  path: Joi.string(),
+  track: Joi.string(),
   file: Joi.object(),
 })
 
