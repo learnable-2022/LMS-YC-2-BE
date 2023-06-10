@@ -32,11 +32,7 @@ const courseSchema = Joi.object({
   week: Joi.string().required(),
   resources: Joi.string(),
   path: Joi.string().required(),
-  file: Joi.object({
-    filename: Joi.string().required(),
-    mimetype: Joi.string().valid('file/mp4', 'file/mpeg', 'file/quicktime').required(),
-    path: Joi.string().required(),
-  }).required()
+  file: Joi.object()
 
 })
 
