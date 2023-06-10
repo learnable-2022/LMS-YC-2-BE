@@ -1,5 +1,6 @@
 const ENUM = {
     VALUE: 'NULL',
+    WEEK: 0,
     REG: "UNREGISTERD",
     COURSE: "NO COURSE",
     RESOURCES: "NULL",
