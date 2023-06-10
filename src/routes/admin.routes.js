@@ -27,7 +27,7 @@ const {
 
 adminRouter.post('/admin/register', validateAdminInputs, registerAdmin)
 adminRouter.post('/admin/login', validateAdminInputs, loginAdmin)
-adminRouter.post('/admin/courses', authAdmin, storage.single('file'), validateCourseInputs, createCourses)
+adminRouter.post('/admin/courses', authAdmin, storage.single('file'),  createCourses)
 adminRouter.post('/admin/logout', authAdmin, loggedOut)
 adminRouter.get('/admin/courses', authAdmin, fetchAllCourses)
 adminRouter.get('/admin/courses/:id', authAdmin, getSingleCourse)

@@ -28,10 +28,10 @@ class CourseController {
             });
 
             const newCourse = await courseService.createCourse({
-                title: title,
+                cloudinary_id: uploadResult.public_id,
                 ...req.body,
                 url: uploadResult.url,
-                cloudinary_id: uploadResult.public_id,                
+
             });
 
             return res.status(200).json({

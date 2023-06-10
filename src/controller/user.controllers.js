@@ -78,7 +78,6 @@ class userControllers {
                 });
             }
             const token = jwt.sign(user.id, process.env.SECRET_KEY)
-            // let { password, ...data } = await user.toJSON()
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
@@ -99,8 +98,6 @@ class userControllers {
         try {
             const token = '';
             await res.cookie("token", token, { httpOnly: true })
-            console.log("User logged out successfully")
-
             return res.status(200).send({
                 message: "User logged out successfully",
                 token: token,

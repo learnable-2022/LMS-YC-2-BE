@@ -3,7 +3,7 @@ const userSchema = Joi.object({
   parent_name: Joi.string().required(),
   email: Joi.string().required(),
   gender: Joi.string().required(),
-  path: Joi.string(),
+  track: Joi.string(),
   register: Joi.string(),
   course: Joi.string(),
   relationship: Joi.string().required(),
