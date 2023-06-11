@@ -2,6 +2,7 @@ const courseService = require('../services/courses.services')
 const adminService = require('../services/admin.services')
 const Course = require('../model/courses.model');
 const cloudinary = require('../lib/cloudinary')
+const path = require('path')
 // const storage = require('../lib/multer')
 
 class CourseController {
@@ -9,10 +10,12 @@ class CourseController {
     async createCourses(req, res) {
         const { title } = req.body;
         try {
+            const file = req.file
+
             // Implementing Cloudinary
             const uploadResult = await new Promise((resolve, reject) => {
                 cloudinary.uploader.upload(
-                    req.file.path,
+                    file.path,
                     {
                         resource_type: 'video',
                         folder: 'video'
@@ -31,7 +34,6 @@ class CourseController {
                 cloudinary_id: uploadResult.public_id,
                 ...req.body,
                 url: uploadResult.url,
-
             });
 
             return res.status(200).json({
