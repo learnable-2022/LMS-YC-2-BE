@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 const { ENUM } = require('../config/constant.config')
 const Schema = mongoose.Schema
+const rounds = parseInt(process.env.ROUNDS)
+const bcrypt = require('bcrypt')
+
 
 const userSchema = new Schema({
     parent_name: {
@@ -71,7 +74,26 @@ const userSchema = new Schema({
     },
 
 },
-    { timestamps: true }
-);
+    { timestamps: true });
+
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password') || this.isNew('password')) {
+        const salt = await bcrypt.genSalt(rounds);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+    next();
+});
+
+userSchema.pre('findOneAndUpdate', async function (next) {
+    const update = this.getUpdate();
+    if (update.password) {
+        const salt = await bcrypt.genSalt(rounds);
+        update.password = await bcrypt.hash(update.password, salt);
+    }
+    next();
+});
+
+
+
 const user = mongoose.model('user', userSchema)
 module.exports = user
