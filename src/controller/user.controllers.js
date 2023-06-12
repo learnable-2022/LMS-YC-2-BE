@@ -3,6 +3,7 @@ const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const User = require('../model/user.model')
 
 const {
     createUser,
@@ -19,6 +20,7 @@ class userControllers {
     async signUp(req, res) {
         try {
             const { password, email } = req.body;
+            const data = req.body
             const findUserEmail = await getAUserByEmail({ email: email });
             if (!email) {
                 return res.status(404).send({
@@ -32,18 +34,11 @@ class userControllers {
             if (!password) {
                 return res.status(400).send({ success: false, message: MESSAGES.USER.INCORRECT_DETAILS });
             }
-
-            const salt = await bcrypt.genSalt(rounds);
-            const hidden_Password = await bcrypt.hash(password, salt);
-            const user = await createUser({
-                ...req.body,
-                password: hidden_Password,
-            });
+            const user = await createUser(data);
             return user
                 ? res.status(201).send({
                     message: 'User created successfully',
                     success: true,
-                    user
                 })
                 : res.status(400).send({
                     message: 'user not created',
@@ -54,7 +49,7 @@ class userControllers {
         catch (error) {
             return {
                 success: false,
-                message: MESSAGES.USER.ERROR + Error.message,
+                message: MESSAGES.USER.ERROR || error
             };
         }
     }
@@ -116,13 +111,10 @@ class userControllers {
     async removeUser(req, res) {
         try {
             const { id } = req.params
-            console.log(req.params);
             //check if the user exists
             const check = checkValidId(id)
-            console.log(check);
             if (check) {
                 const findUser = await getAUserById(id)
-                console.log(findUser);
                 if (findUser) {
                     const deleted = await deleteUser(id)
                     if (deleted) {
@@ -160,6 +152,7 @@ class userControllers {
     async updateAUser(req, res) {
         try {
             const { id } = req.params
+            const data = req.body
             //check  if valid id
             const check = checkValidId(id)
             if (check) {
@@ -169,7 +162,6 @@ class userControllers {
                     if (updated) {
                         return res.status(200).send({
                             success: true,
-                            user: updated,
                             message: MESSAGES.USER.ACCOUNT_UPDATED
                         })
                     } else {
@@ -192,7 +184,51 @@ class userControllers {
             }
         } catch (error) {
             return {
-                message: MESSAGES.USER.ERROR + err.message,
+                message: MESSAGES.USER.ERROR + error.message,
+                success: false,
+            };
+        }
+    }
+
+
+    async recoverPassword(req, res) {
+        try {
+            const { email, password } = req.body
+            if (!email) {
+                return res.status(404).send({
+                    message: 'Enter email address',
+                    success: false
+                })
+            }
+            if (!password) {
+                return res.status(404).send({
+                    message: 'Enter new password',
+                    success: false
+                })
+            }
+            const user = await getAUserByEmail({ email: email });
+            if (!user) {
+                return res.status(404).send({
+                    message: 'Email is not registered',
+                    success: false
+                })
+            }
+            const id = user._id;
+
+            const updated = await User.findByIdAndUpdate(
+                id,
+                { password },
+                { new: true }
+            );
+            return res.status(200).send({
+                message: 'Password changed',
+                success: true,
+                updated
+            })
+
+        } catch (error) {
+            return {
+                message: MESSAGES.USER.ERROR + error.message,
                 success: false,
             };
         }

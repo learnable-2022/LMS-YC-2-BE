@@ -12,6 +12,7 @@ const {
     fetchAllUsers,
     updateAUser,
     removeUser,
+    recoverPassword,
     loggedOut
 } = userController = require('../controller/user.controllers')
 
@@ -27,6 +28,7 @@ userRouter.get('/user/courses', auth, fetchAllCourses)
 userRouter.get('/user/courses/:id', auth, getSingleCourse)
 userRouter.get('/user', auth, fetchAllUsers)
 userRouter.get('/user/:id', auth, findAUser)
+userRouter.patch('/user/recover', recoverPassword)
 userRouter.patch('/user/:id', auth, updateAUser)
 userRouter.delete('/user/:id', auth, removeUser)
 
