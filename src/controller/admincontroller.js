@@ -12,6 +12,8 @@ class AdminController {
     //create an user     
     async registerAdmin(req, res) {
         const { email, password } = req.body
+        const data = req.body
+
         try {
             // check if admin exist 
             const existingAdmin = await adminService.getAdmin({
@@ -31,12 +33,7 @@ class AdminController {
                     success: false
                 });
 
-            const salt = await bcrypt.genSalt(rounds);
-            const hidden_Password = await bcrypt.hash(password, salt);
-            const admin = await adminService.createAdmin({
-                ...req.body,
-                password: hidden_Password,
-            })
+            const admin = await adminService.createAdmin(data)
 
             return admin
                 ? res.status(201).send({
@@ -76,7 +73,6 @@ class AdminController {
                 });
             }
             const token = jwt.sign(user.id, process.env.SECRET_KEY)
-            // let { password, ...data } = await user.toJSON()
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
@@ -140,7 +136,6 @@ class AdminController {
     }
     // get a single admin
     async getOneAdmin(req, res) {
-
         // check if the admin exists
         try {
             const { id } = req.params
@@ -179,40 +174,39 @@ class AdminController {
     }
 
     // edit an admin
-    async updateAdmin(req, res){
-        try{
+    async updateAdmin(req, res) {
+        try {
             const id = req.params;
+            const data = req.body
             const check = checkValidId(id);
-            if (check){
+            if (check) {
                 const existingAdmin = await adminService.getAdmin({
-                    _id:id
+                    _id: id
                 })
-                if(!existingAdmin){
+                if (!existingAdmin) {
                     return res.status(404).send({
                         message: 'Admin does not exist',
                         success: false
                     })
                 }
                 //update and hash admin password
-                const salt = await bcrypt.genSalt (rounds)
-                const hashedPassword = await bcrypt.hash(req.body.password, salt)
-                const updated =  await adminService.editAdminById(
-                    id, 
-                    hashedPassword
-                    )
-                    return res.status(200).send({
-                        message: 'Admin updated successfully',
-                        success: true,
-                        updated
-                    })     
-            }else{
+                const updated = await adminService.editAdminById(
+                    id,
+                    data
+                )
+                return res.status(200).send({
+                    message: 'Admin updated successfully',
+                    success: true,
+                    data: updated
+                })
+            } else {
                 return res.status(400).send({
                     message: 'Invalid ID',
                     success: false
                 })
             }
 
-        }catch(error){
+        } catch (error) {
             return res.status(500).send({
                 message: 'Error: ' + error.message,
                 success: false
@@ -220,7 +214,7 @@ class AdminController {
         }
     }
 
-   // recover password
+    // recover password
     async recoverPassword(req, res) {
         try {
             const { email, password } = req.body
@@ -244,7 +238,6 @@ class AdminController {
                 })
             }
             const id = admin._id;
-
             const updated = await Admin.findByIdAndUpdate(
                 id,
                 { password },
@@ -253,7 +246,7 @@ class AdminController {
             return res.status(200).send({
                 message: 'Password changed',
                 success: true,
-                updated
+                data: updated
             })
 
         } catch (error) {
@@ -267,7 +260,6 @@ class AdminController {
 
     // delete an admin
     async deleteOne(req, res) {
-
         // check if an admin exist before deleting
         try {
             const { id } = req.params
