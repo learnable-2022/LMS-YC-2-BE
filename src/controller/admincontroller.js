@@ -3,10 +3,8 @@ const checkValidId = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const rounds = +process.env.ROUNDS
-const duration = process.env.JWT_EXPIRES_IN
 const Admin = require('../model/admin.model')
-const mongoose = require('mongoose')
+
 
 class AdminController {
     //create an user     
@@ -34,12 +32,10 @@ class AdminController {
                 });
 
             const admin = await adminService.createAdmin(data)
-
             return admin
                 ? res.status(201).send({
                     message: 'Admin created successfully',
                     success: true,
-                    admin
                 })
                 : res.status(400).send({
                     message: 'Admin not created',
@@ -57,7 +53,8 @@ class AdminController {
     //loginIn user
     async loginAdmin(req, res, next) {
         try {
-            const { email, password } = req.body
+            const { email } = req.body
+            let enteredPassword = req.body.password
             let user = await adminService.getAdmin({ email: email })
             if (!user) {
                 return res.status(404).send({
@@ -65,18 +62,19 @@ class AdminController {
                     success: false
                 });
             }
-            const check = await bcrypt.compare(password, user.password)
+            const check = await bcrypt.compare(enteredPassword, user.password)
             if (!check) {
                 return res.status(403).send({
                     message: "wrong password",
                     success: false
                 });
             }
+            let { password, ...data } = user.toJSON()
             const token = jwt.sign(user.id, process.env.SECRET_KEY)
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
-                user: user,
+                user: data,
                 token
             });
         } catch (err) {
@@ -151,10 +149,11 @@ class AdminController {
                     })
                 } else {
                     // returns true if the admin exist
+                    let { password, ...data } = existingAdmin.toJSON()
                     return res.status(200).send({
                         message: 'Admin fetched successfully',
                         success: true,
-                        data: existingAdmin
+                        data: data
                     });
                 }
             } else {
@@ -173,58 +172,19 @@ class AdminController {
 
     }
 
-    // edit an admin
-    async updateAdmin(req, res) {
-        try {
-            const id = req.params;
-            const data = req.body
-            const check = checkValidId(id);
-            if (check) {
-                const existingAdmin = await adminService.getAdmin({
-                    _id: id
-                })
-                if (!existingAdmin) {
-                    return res.status(404).send({
-                        message: 'Admin does not exist',
-                        success: false
-                    })
-                }
-                //update and hash admin password
-                const updated = await adminService.editAdminById(
-                    id,
-                    data
-                )
-                return res.status(200).send({
-                    message: 'Admin updated successfully',
-                    success: true,
-                    data: updated
-                })
-            } else {
-                return res.status(400).send({
-                    message: 'Invalid ID',
-                    success: false
-                })
-            }
-
-        } catch (error) {
-            return res.status(500).send({
-                message: 'Error: ' + error.message,
-                success: false
-            })
-        }
-    }
 
     // recover password
     async recoverPassword(req, res) {
         try {
-            const { email, password } = req.body
+            let { email } = req.body
+            let newPassword = req.body.password
             if (!email) {
                 return res.status(404).send({
                     message: 'Enter email address',
                     success: false
                 })
             }
-            if (!password) {
+            if (!newPassword) {
                 return res.status(404).send({
                     message: 'Enter new password',
                     success: false
@@ -238,15 +198,16 @@ class AdminController {
                 })
             }
             const id = admin._id;
-            const updated = await Admin.findByIdAndUpdate(
+            let updated = await Admin.findByIdAndUpdate(
                 id,
-                { password },
+                { password: newPassword },
                 { new: true }
             );
+            const { password, ...data } = updated.toJSON()
             return res.status(200).send({
                 message: 'Password changed',
                 success: true,
-                data: updated
+                data: data
             })
 
         } catch (error) {

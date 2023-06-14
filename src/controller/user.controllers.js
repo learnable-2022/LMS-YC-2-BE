@@ -45,7 +45,6 @@ class userControllers {
                 ? res.status(201).send({
                     message: 'User created successfully',
                     success: true,
-                    user
                 })
                 : res.status(400).send({
                     message: 'user not created',
@@ -64,7 +63,8 @@ class userControllers {
     //loginIn user
     async loginUser(req, res, next) {
         try {
-            const { email, password } = req.body
+            let { email } = req.body
+            const enteredPassord = req.body.password
             let user = await getAUserByEmail({ email: email })
             if (!user) {
                 return res.status(404).send({
@@ -72,7 +72,7 @@ class userControllers {
                     success: false
                 });
             }
-            const check = await bcrypt.compare(password, user.password)
+            const check = await bcrypt.compare(enteredPassord, user.password)
             if (!check) {
                 return res.status(403).send({
                     message: "wrong password",
@@ -80,10 +80,11 @@ class userControllers {
                 });
             }
             const token = jwt.sign(user.id, process.env.SECRET_KEY)
+            const { password, ...data } = user.toJSON()
             return res.status(200).send({
                 message: 'Login Successful',
                 success: true,
-                user: user,
+                user: data,
                 token
             });
         } catch (err) {
@@ -201,14 +202,15 @@ class userControllers {
 
     async recoverPassword(req, res) {
         try {
-            const { email, password } = req.body
+            let { email } = req.body
+            let newPassword = req.body.password
             if (!email) {
                 return res.status(404).send({
                     message: 'Enter email address',
                     success: false
                 })
             }
-            if (!password) {
+            if (!newPassword) {
                 return res.status(404).send({
                     message: 'Enter new password',
                     success: false
@@ -224,13 +226,14 @@ class userControllers {
             const id = user._id;
             const updated = await User.findByIdAndUpdate(
                 id,
-                { password },
-                { new: true }
+                { password: newPassword },
             );
+            console.log(updated)
+            const { password, ...data } = user.toJSON()
             return res.status(200).send({
                 message: 'Password changed',
                 success: true,
-                updated
+                data: data
             })
 
         } catch (error) {

@@ -90,6 +90,7 @@ userSchema.pre('findOneAndUpdate', async function (next) {
         const salt = await bcrypt.genSalt(rounds);
         update.password = await bcrypt.hash(update.password, salt);
     }
+    console.log("done")
     next();
 });
 
