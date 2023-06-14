@@ -30,14 +30,14 @@ class userControllers {
             }
             if (findUserEmail) {
                 return res.status(400).send({
-                     success: false,
-                     message: MESSAGES.USER.DUPLICATE_EMAIL 
-                    });
+                    success: false,
+                    message: MESSAGES.USER.DUPLICATE_EMAIL
+                });
             }
             if (!password) {
-                return res.status(400).send({ 
-                    success: false, 
-                    message: MESSAGES.USER.INCORRECT_DETAILS 
+                return res.status(400).send({
+                    success: false,
+                    message: MESSAGES.USER.INCORRECT_DETAILS
                 });
             }
             const user = await createUser(data);
@@ -222,7 +222,6 @@ class userControllers {
                 })
             }
             const id = user._id;
-
             const updated = await User.findByIdAndUpdate(
                 id,
                 { password },
