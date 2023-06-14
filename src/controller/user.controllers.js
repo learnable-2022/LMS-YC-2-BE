@@ -29,16 +29,23 @@ class userControllers {
                 })
             }
             if (findUserEmail) {
-                return res.status(400).send({ success: false, message: MESSAGES.USER.DUPLICATE_EMAIL });
+                return res.status(400).send({
+                     success: false,
+                     message: MESSAGES.USER.DUPLICATE_EMAIL 
+                    });
             }
             if (!password) {
-                return res.status(400).send({ success: false, message: MESSAGES.USER.INCORRECT_DETAILS });
+                return res.status(400).send({ 
+                    success: false, 
+                    message: MESSAGES.USER.INCORRECT_DETAILS 
+                });
             }
             const user = await createUser(data);
             return user
                 ? res.status(201).send({
                     message: 'User created successfully',
                     success: true,
+                    user
                 })
                 : res.status(400).send({
                     message: 'user not created',
@@ -162,7 +169,8 @@ class userControllers {
                     if (updated) {
                         return res.status(200).send({
                             success: true,
-                            message: MESSAGES.USER.ACCOUNT_UPDATED
+                            message: MESSAGES.USER.ACCOUNT_UPDATED,
+                            updated
                         })
                     } else {
                         return res.status(409).send({
