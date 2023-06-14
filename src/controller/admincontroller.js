@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const rounds = +process.env.ROUNDS
 const duration = process.env.JWT_EXPIRES_IN
+const Admin = require('../model/admin.model')
+const mongoose = require('mongoose')
 
 class AdminController {
     //create an user     
@@ -177,41 +179,88 @@ class AdminController {
     }
 
     // edit an admin
-    async updateAdmin(req, res) {
-        try {
-            const { id } = req.params;
+    async updateAdmin(req, res){
+        try{
+            const id = req.params;
             const check = checkValidId(id);
-            if (check) {
-                const existingAdmin = await adminService.getAdmin({ _id: id });
-                if (!existingAdmin) {
+            if (check){
+                const existingAdmin = await adminService.getAdmin({
+                    _id:id
+                })
+                if(!existingAdmin){
                     return res.status(404).send({
                         message: 'Admin does not exist',
                         success: false
-                    });
+                    })
                 }
-
-                // Update the admin's password
-                const salt = await bcrypt.genSalt(rounds);
-                const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-                // Update the admin's password
-                const updated = await adminService.editAdminById(id, { password: hashedPassword });
-                return res.status(200).send({
-                    message: 'Admin updated successfully',
-                    admin: updated,
-                    success: true
-                });
-            } else {
+                //update and hash admin password
+                const salt = await bcrypt.genSalt (rounds)
+                const hashedPassword = await bcrypt.hash(req.body.password, salt)
+                const updated =  await adminService.editAdminById(
+                    id, 
+                    hashedPassword
+                    )
+                    return res.status(200).send({
+                        message: 'Admin updated successfully',
+                        success: true,
+                        updated
+                    })     
+            }else{
                 return res.status(400).send({
-                    message: 'Invalid id',
+                    message: 'Invalid ID',
                     success: false
-                });
+                })
             }
+
+        }catch(error){
+            return res.status(500).send({
+                message: 'Error: ' + error.message,
+                success: false
+            })
+        }
+    }
+
+   // recover password
+    async recoverPassword(req, res) {
+        try {
+            const { email, password } = req.body
+            if (!email) {
+                return res.status(404).send({
+                    message: 'Enter email address',
+                    success: false
+                })
+            }
+            if (!password) {
+                return res.status(404).send({
+                    message: 'Enter new password',
+                    success: false
+                })
+            }
+            const admin = await adminService.getAdmin({ email: email });
+            if (!admin) {
+                return res.status(404).send({
+                    message: 'Email is not registered',
+                    success: false
+                })
+            }
+            const id = admin._id;
+
+            const updated = await Admin.findByIdAndUpdate(
+                id,
+                { password },
+                { new: true }
+            );
+            return res.status(200).send({
+                message: 'Password changed',
+                success: true,
+                updated
+            })
+
         } catch (error) {
             return res.status(500).send({
                 message: 'Error: ' + error.message,
                 success: false
-            });
+            })
         }
     }
 

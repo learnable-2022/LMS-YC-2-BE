@@ -14,6 +14,7 @@ const {
     getOneAdmin,
     getAdmins,
     updateAdmin,
+    recoverPassword,
     deleteOne,
 } = adminController = require('../controller/admincontroller')
 
@@ -35,6 +36,7 @@ adminRouter.patch('/admin/courses/:id', authAdmin, editCourse)
 adminRouter.delete('/admin/courses/:id', authAdmin, deleteCourse)
 adminRouter.get('/admin', authAdmin, getAdmins)
 adminRouter.get('/admin/:id', authAdmin, getOneAdmin)
+adminRouter.patch('/admin/recover', recoverPassword)
 adminRouter.patch('/admin/:id', authAdmin, updateAdmin)
 adminRouter.delete('/admin/:id', authAdmin, deleteOne)
 
