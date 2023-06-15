@@ -6,9 +6,9 @@ This application is designed to serve as the backend for a Learning Management S
 
 # Functionalities
 
-A User(child) can create an account and sign in to view and use the application, update their account using their id, delete their account using their id and view their profile.
+A Student(child) can create an account and sign in to view and use the application, update their account using their id, recover password, delete their account using their id and view their profile.
 
-An admin(Tutor) can create an account uniquely, sign in to view and use the application, update their account using their id, delete their account using their id, view their profile, upload course(s) on the application, delete course(s), update course(s), view all courses, view a single course and track progress on the course.
+An admin(Tutor) can create an account uniquely, sign in to view and use the application, recover password, delete their account using their id, view their profile, upload course(s) on the application, delete course(s), update course(s), view all courses, view a single course and track progress on the course.
 
 # Prerequisites
 
@@ -20,7 +20,9 @@ Latest version of the following:
 - Mongoose
 - bcrypt
 - joi
-- passport
+- ms
+- path
+- jsonwebtoken
 - express-session
 - MongoDB Atlas account.
 - cloudinary
