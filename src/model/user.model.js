@@ -56,10 +56,22 @@ const userSchema = new Schema({
     },
 
     register: {
-        type: String,
+        type: Number ,
         trim: true,
         default: ENUM.REG
     },
+    quiz:{
+        type: String,
+        trim: true,
+        default: ENUM.QUIZ
+
+    },
+    progress:{
+        type: String,
+        trim: true,
+        default: ENUM.PROGRESS
+    },
+
 
     DOB: {
         type: String,

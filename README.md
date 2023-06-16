@@ -20,7 +20,7 @@ Latest version of the following:
 - Mongoose
 - bcrypt
 - joi
-- passport
+- jsonwebtoken
 - express-session
 - MongoDB Atlas account.
 - cloudinary
