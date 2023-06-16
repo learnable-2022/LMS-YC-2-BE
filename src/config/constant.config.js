@@ -6,7 +6,7 @@ const ENUM = {
     RESOURCES: "NULL",
     PATH: "NULL",
     PROGRESS: "NULL",
-    QUIZ: "NULL"
+    QUIZ: 0
 
 }
 const MESSAGES = {

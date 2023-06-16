@@ -6,6 +6,8 @@ const userSchema = Joi.object({
   track: Joi.string(),
   register: Joi.string(),
   course: Joi.string(),
+  quiz: Joi.number(),
+  progress: Joi.string(),
   relationship: Joi.string().required(),
   child_name: Joi.string().required(),
   child_class: Joi.string().required(),
