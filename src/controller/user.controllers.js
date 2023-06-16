@@ -1,6 +1,7 @@
 const checkValidId = require('../utils/validateID')
 const { MESSAGES } = require('../config/constant.config')
 const usersServices = require('../services/user.services')
+const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../model/user.model')
