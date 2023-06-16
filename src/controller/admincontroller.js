@@ -142,10 +142,14 @@ class AdminController {
                 const existingAdmin = await adminService.getAdmin({
                     _id: id
                 })
+                // console.log(req.headers)
+                // const authorizationHeader = req.headers.authorization;
+                // console.log(authorizationHeader)
                 if (!existingAdmin) {
                     return res.status(404).send({
                         message: 'Admin does not exist',
                         success: false
+                        
                     })
                 } else {
                     // returns true if the admin exist

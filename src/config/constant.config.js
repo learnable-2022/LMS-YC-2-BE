@@ -4,7 +4,9 @@ const ENUM = {
     REG: "UNREGISTERD",
     COURSE: "NO COURSE",
     RESOURCES: "NULL",
-    PATH: "NULL"
+    PATH: "NULL",
+    PROGRESS: "NULL",
+    QUIZ: "NULL"
 
 }
 const MESSAGES = {

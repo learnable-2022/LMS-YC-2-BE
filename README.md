@@ -20,8 +20,6 @@ Latest version of the following:
 - Mongoose
 - bcrypt
 - joi
-- ms
-- path
 - jsonwebtoken
 - express-session
 - MongoDB Atlas account.

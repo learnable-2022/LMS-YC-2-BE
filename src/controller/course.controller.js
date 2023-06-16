@@ -3,12 +3,18 @@ const adminService = require('../services/admin.services')
 const Course = require('../model/courses.model');
 const cloudinary = require('../lib/cloudinary')
 const path = require('path')
+const authAdmin = require('../middleware/authenticateAdmin')
+
 // const storage = require('../lib/multer')
 
 class CourseController {
     // create a course by an admin
     async createCourses(req, res) {
         const { title } = req.body;
+        //const { adminId } = req
+        //const token = req.token;
+        //console.log(token)
+        //console.log(adminId)
         try {
             const file = req.file
 
@@ -32,6 +38,7 @@ class CourseController {
 
             const newCourse = await courseService.createCourse({
                 cloudinary_id: uploadResult.public_id,
+                //admin:adminId,
                 ...req.body,
                 url: uploadResult.url,
             });
