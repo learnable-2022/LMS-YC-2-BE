@@ -34,11 +34,11 @@ const courseSchema = new Schema({
     default: ENUM.PATH,
   },
 
-  admin: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Admin,
-    required: true
-  },
+  // admin: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: Admin,
+  //   required: true
+  // },
 
   cloudinary_id: {
     type: String,
