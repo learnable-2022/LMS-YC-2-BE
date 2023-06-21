@@ -4,6 +4,11 @@ const Course = require('../model/courses.model');
 const cloudinary = require('../lib/cloudinary')
 const path = require('path')
 const authAdmin = require('../middleware/authenticateAdmin')
+const jwt = require('jsonwebtoken')
+const dotenv = require('dotenv')
+dotenv.config();
+const mongoose = require ('mongoose')
+const getAdminId = require('../lib/adminId')
 
 // const storage = require('../lib/multer')
 
@@ -11,11 +16,16 @@ class CourseController {
     // create a course by an admin
     async createCourses(req, res) {
         const { title } = req.body;
-        //const { adminId } = req
-        //const token = req.token;
-        //console.log(token)
-        //console.log(adminId)
         try {
+            // calling the getAdminId function
+            const adminId = await getAdminId(req);
+
+            if (!adminId) {
+            return res.status(401).json({
+            message: 'Unauthorized Access',
+            success: false
+             });
+            }
             const file = req.file
 
             // Implementing Cloudinary
@@ -38,11 +48,11 @@ class CourseController {
 
             const newCourse = await courseService.createCourse({
                 cloudinary_id: uploadResult.public_id,
-                //admin:adminId,
+                admin:adminId,
                 ...req.body,
                 url: uploadResult.url,
             });
-
+            await newCourse.populate('admin')
             return res.status(200).json({
                 message: 'Video uploaded and course created successfully',
                 newCourse,
