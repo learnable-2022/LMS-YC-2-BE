@@ -7,7 +7,9 @@ const userSchema = Joi.object({
   register: Joi.string(),
   course: Joi.string(),
   quiz: Joi.number(),
+  watchedVideos: Joi.array(),
   progress: Joi.string(),
+  badges: Joi.number(),
   relationship: Joi.string().required(),
   child_name: Joi.string().required(),
   child_class: Joi.string().required(),
@@ -19,7 +21,6 @@ const userSchema = Joi.object({
 const loginUserSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().required()
-
 })
 
 const adminSchema = Joi.object({
