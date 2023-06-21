@@ -8,7 +8,6 @@ const getAdminId = async (req, res, next) => {
         const authorizationHeader = req.headers.authorization;
         const bearToken = authorizationHeader.split(' ')[1];
         const adminId = jwt.verify(bearToken, process.env.SECRET_KEY)
-        console.log(adminId)
         return adminId
     }catch(error){
         return null

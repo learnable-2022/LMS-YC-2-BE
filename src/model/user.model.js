@@ -84,6 +84,18 @@ const userSchema = new Schema({
         required: true,
     },
 
+    watchedVideos: {
+        type: Array,
+        trim: true,
+        default: []
+    },
+
+    badges: {
+        type: Number,
+        trim: true,
+        default: ENUM.BADGES
+    }
+
 },
     { timestamps: true }
 );

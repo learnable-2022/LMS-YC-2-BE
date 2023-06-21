@@ -1,13 +1,7 @@
 const courseService = require('../services/courses.services')
-const adminService = require('../services/admin.services')
-const Course = require('../model/courses.model');
 const cloudinary = require('../lib/cloudinary')
-const path = require('path')
-const authAdmin = require('../middleware/authenticateAdmin')
-const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config();
-const mongoose = require ('mongoose')
 const getAdminId = require('../lib/adminId')
 
 // const storage = require('../lib/multer')
@@ -15,16 +9,15 @@ const getAdminId = require('../lib/adminId')
 class CourseController {
     // create a course by an admin
     async createCourses(req, res) {
-        const { title } = req.body;
         try {
             // calling the getAdminId function
             const adminId = await getAdminId(req);
 
             if (!adminId) {
-            return res.status(401).json({
-            message: 'Unauthorized Access',
-            success: false
-             });
+                return res.status(401).json({
+                    message: 'Unauthorized Access',
+                    success: false
+                });
             }
             const file = req.file
 
@@ -48,7 +41,7 @@ class CourseController {
 
             const newCourse = await courseService.createCourse({
                 cloudinary_id: uploadResult.public_id,
-                admin:adminId,
+                admin: adminId,
                 ...req.body,
                 url: uploadResult.url,
             });
@@ -169,7 +162,6 @@ class CourseController {
                     message: 'No course found',
                     success: false
                 })
-
             }
 
             // delete course if the above condition was met
