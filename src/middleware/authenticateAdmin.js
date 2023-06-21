@@ -34,6 +34,7 @@ try {
                     message: "INVALIDTOKEN"
                 });
         } else {
+            console.log(bearToken)
             const user = await adminModel.findById(decoded);
             if (!user) {
                 return res.status(401)
@@ -43,7 +44,7 @@ try {
                     });
             }
             // Add the decoded token to the request object for future use
-            req.user = decoded;
+            req.user= decoded;
             next();
         }
     });
