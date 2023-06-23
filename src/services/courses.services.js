@@ -9,12 +9,12 @@ class courseService {
 
     // get all courses
     async getAllCourses() {
-        return await Course.find()
+        return await Course.find().populate("admin", "email")
     }
 
     // get a single course 
     async getCourse(filter) {
-        return await Course.findOne(filter);
+        return await Course.findOne(filter).populate("admin", "email");
     }
 
     // edit a course by id

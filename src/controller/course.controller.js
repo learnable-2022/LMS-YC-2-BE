@@ -45,7 +45,7 @@ class CourseController {
                 ...req.body,
                 url: uploadResult.url,
             });
-            await newCourse.populate('admin')
+            await newCourse.populate("admin", "email")
             return res.status(200).json({
                 message: 'Video uploaded and course created successfully',
                 newCourse,
@@ -66,7 +66,7 @@ class CourseController {
             const courses = await courseService.getAllCourses()
             if (!courses) {
                 return res.status(404).send({
-                    message: 'Courses not found' || err.message,
+                    message: 'Courses not found',
                     success: false
                 })
             } else {
@@ -76,7 +76,7 @@ class CourseController {
                 })
             }
 
-        } catch {
+        } catch (error) {
             return res.status(500).send({
                 message: 'An Error occured: ' + error.message,
                 success: false
@@ -94,7 +94,7 @@ class CourseController {
             })
             if (!course) {
                 return res.status(404).send({
-                    message: 'Course not found' || err.message,
+                    message: 'Course not found',
                     success: false
                 });
             } else {
@@ -106,7 +106,7 @@ class CourseController {
                 });
             }
 
-        } catch {
+        } catch (error) {
             return res.status(500).send({
                 message: 'An Error occured: ' + error.message,
                 success: false
