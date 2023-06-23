@@ -90,6 +90,11 @@ const userSchema = new Schema({
         default: []
     },
 
+    quizTaken: {
+        type: Boolean,
+        default: false
+    },
+
     badges: {
         type: Number,
         trim: true,

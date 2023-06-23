@@ -7,6 +7,7 @@ const userSchema = Joi.object({
   register: Joi.string(),
   course: Joi.string(),
   quiz: Joi.number(),
+  quizTaken: Joi.boolean(),
   watchedVideos: Joi.array(),
   progress: Joi.string(),
   badges: Joi.number(),
