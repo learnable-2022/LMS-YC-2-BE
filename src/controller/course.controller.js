@@ -53,7 +53,7 @@ class CourseController {
             });
         } catch (error) {
             return res.status(500).json({
-                message: 'An error occurred: ' + error.message,
+                message: 'An error occurred: ' + error,
                 success: false
             });
         }
@@ -78,7 +78,7 @@ class CourseController {
 
         } catch (error) {
             return res.status(500).send({
-                message: 'An Error occured: ' + error.message,
+                message: 'An Error occured: ' + error,
                 success: false
             })
         }
@@ -108,7 +108,7 @@ class CourseController {
 
         } catch (error) {
             return res.status(500).send({
-                message: 'An Error occured: ' + error.message,
+                message: 'An Error occured: ' + error,
                 success: false
             })
         }
@@ -123,7 +123,7 @@ class CourseController {
 
             if (!course) {
                 return res.status(404).json({
-                    message: 'Course not found' || err.message,
+                    message: 'Course not found',
                     success: false
                 });
             }
@@ -142,7 +142,7 @@ class CourseController {
             });
         } catch (error) {
             return res.status(500).send({
-                message: 'An Error occured: ' + error.message,
+                message: 'An Error occured: ' + error,
                 success: false
             })
         }
@@ -173,7 +173,7 @@ class CourseController {
 
         } catch (error) {
             return res.status(500).send({
-                message: 'An Error occured: ' + error.message,
+                message: 'An Error occured: ' + error,
                 success: false
             })
         }
