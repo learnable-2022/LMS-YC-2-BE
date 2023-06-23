@@ -44,7 +44,7 @@ class AdminController {
 
         } catch (error) {
             return res.status(500).send({
-                message: 'An Error: ' + error.message,
+                message: 'An Error: ' + error,
                 success: false
             })
         }
@@ -91,7 +91,6 @@ class AdminController {
         try {
             const token = '';
             await res.cookie("token", token, { httpOnly: true })
-            console.log("Admin logged out successfully")
 
             return res.status(200).send({
                 message: "Admin logged out successfully",
@@ -114,7 +113,7 @@ class AdminController {
             const admins = await adminService.getAllAdmin({})
             if (!admins) {
                 return res.status(404).send({
-                    message: 'Admins not found' || err.message,
+                    message: 'Admins not found',
                     success: false
                 })
             } else {
@@ -142,9 +141,6 @@ class AdminController {
                 const existingAdmin = await adminService.getAdmin({
                     _id: id
                 })
-                // console.log(req.headers)
-                // const authorizationHeader = req.headers.authorization;
-                // console.log(authorizationHeader)
                 if (!existingAdmin) {
                     return res.status(404).send({
                         message: 'Admin does not exist',
