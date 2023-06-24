@@ -2,6 +2,8 @@ const { Router } = require('express')
 const { validateUserInputs, validateUserLoginInputs } = require('../utils/validation')
 const userRouter = Router()
 const auth = require('../middleware/authenticate')
+const authAdmin = require('../middleware/authenticateAdmin')
+
 
 // The routes contains CRUD operations for users and their abilities to fetch a single or all courses depending on what they want to watch.
 
@@ -26,7 +28,7 @@ userRouter.post('/user/login', validateUserLoginInputs, loginUser)
 userRouter.post('/user/logout', auth, loggedOut)
 userRouter.get('/user/courses', auth, fetchAllCourses)
 userRouter.get('/user/courses/:id', auth, getSingleCourse)
-userRouter.get('/user', auth, fetchAllUsers)
+userRouter.get('/user', authAdmin, fetchAllUsers)
 userRouter.get('/user/:id', auth, findAUser)
 userRouter.patch('/user/recover', recoverPassword)
 userRouter.patch('/user/:id', auth, updateAUser)
